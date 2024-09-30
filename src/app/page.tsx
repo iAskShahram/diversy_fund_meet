@@ -1,4 +1,4 @@
-export default async function Home() {
+export default async function Page() {
   return (
     <div>
       <h1>DiveryFund Meet Planner</h1>
