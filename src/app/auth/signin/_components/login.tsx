@@ -1,4 +1,6 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { SubmitButton } from "@/app/_components/submit-button";
 import {
   Card,
   CardContent,
@@ -8,43 +10,27 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInSchema } from "@/lib/validators/auth";
-import { signIn } from "@/server/auth";
-import { redirect } from "next/navigation";
-export const description =
-  "A sign up form with first name, last name, email and password inside a card. There's an option to sign up with GitHub and a link to login if you already have an account";
+import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useFormState } from "react-dom";
+import { signInAction } from "../actions/singin";
+
+const initialState = {
+  errors: "",
+  success: false,
+};
 
 export function LoginForm() {
-  const onSubmit = async (formData: FormData) => {
-    "use server";
-    const formFields = await signInSchema.safeParseAsync({
-      email: formData.get("email"),
-      password: formData.get("password"),
-    });
+  const [state, formAction] = useFormState(signInAction, initialState);
+  const router = useRouter();
 
-    if (!formFields.success) {
-      return;
+  useEffect(() => {
+    if (state.success) {
+      router.push("/");
     }
-    const { email, password } = formFields.data;
-    let redirectUrl: string | null = null;
-    try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-      const callbackUrl = new URL(res as string).searchParams.get(
-        "callbackUrl",
-      );
-      redirectUrl = callbackUrl ?? "/";
-    } catch (err) {
-      console.log({ err });
-    } finally {
-      if (redirectUrl) {
-        redirect(redirectUrl);
-      }
-    }
-  };
+  }, [state.success, router]);
+
   return (
     <Card className="mx-auto min-w-full">
       <CardHeader>
@@ -52,7 +38,7 @@ export function LoginForm() {
         <CardDescription>Enter your credentials to sign in</CardDescription>
       </CardHeader>
       <CardContent>
-        <form action={onSubmit}>
+        <form action={formAction}>
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
@@ -68,13 +54,14 @@ export function LoginForm() {
               <Label htmlFor="password">Password</Label>
               <Input id="password" name="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
-              Sign In
-            </Button>
+            <SubmitButton txt="Sign In" />
           </div>
-          <div className="mt-4 text-center text-sm">
-            Already have an account?{" "}
-          </div>
+          <p
+            role="status"
+            className={cn(!!state.errors && "text-sm text-red-500")}
+          >
+            {state.errors}
+          </p>
         </form>
       </CardContent>
     </Card>
