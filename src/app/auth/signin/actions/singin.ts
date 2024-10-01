@@ -27,6 +27,7 @@ export async function signInAction(prevState: State, formData: FormData) {
     await signIn("credentials", {
       email,
       password,
+      redirect: false,
     });
     return {
       success: true,

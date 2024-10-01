@@ -1,16 +1,16 @@
 import { env } from "@/env";
 import { signInSchema } from "@/lib/validators/auth";
 import { verifyPassword } from "@/utils/auth.util";
+import { AccessDenied } from "@auth/core/errors";
 import type { Role } from "@prisma/client";
-import createHttpError from "http-errors";
-import NextAuth, { type DefaultSession } from "next-auth";
+import NextAuth, { type DefaultSession, type User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
-      id: number;
+      id: string;
       role: Role;
       email: string;
       image: string;
@@ -20,7 +20,10 @@ declare module "next-auth" {
   }
 
   interface User {
+    id?: string;
     role: Role;
+    email?: string | null | undefined;
+    image?: string | null | undefined;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -29,7 +32,7 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
   interface JWT {
-    id: number;
+    id: string;
     role: Role;
     email: string;
     image: string;
@@ -46,9 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   jwt: {
     maxAge: 60 * 60 * 24 * 7, // 7 days
   },
-
   secret: env.AUTH_SECRET,
-
   pages: {
     signIn: "/auth/signin", // Point to custom sign-in page
   },
@@ -67,9 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           password: credentials.password,
         });
         if (!values.success) {
-          throw createHttpError.BadRequest(
-            values.error.errors[0]?.message ?? "Invalid email or password",
-          );
+          throw new AccessDenied("1: Invalid email or password.");
         }
         const user = await db.user.findUnique({
           where: {
@@ -77,51 +76,50 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           },
         });
 
+
         if (!user) {
-          throw createHttpError.NotFound("User not found");
+          throw new AccessDenied("2: Invalid email or password.");
         }
         const isPasswordValid = await verifyPassword(
           values.data.password,
-          user.password,
+          user.password as string,
         );
         if (!isPasswordValid) {
-          throw createHttpError.Unauthorized("Invalid email or password");
+          throw new AccessDenied("3: Invalid email or password.");
         }
 
-        // return user;
-
         return {
-          id: user.id.toString(),
+          id: user.id,
+          name: user.name,
           role: user.role,
           email: user.email,
           image: user.image,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
-        };
+        } satisfies User;
       },
     }),
   ],
   callbacks: {
-    // The signIn callback is already present and correctly implemented
-    signIn: async ({ user, account, profile, email, credentials }) => {
-      // log and check which one is executed in which order
-      console.log("signIn :: ", user, account, profile, email, credentials);
-      // user ha values returned from authorzie
-      return true;
-    },
-    jwt: async ({ token, user, account, profile, session, trigger }) => {
-      console.log("jwt :: ", token, user, account, profile, session, trigger);
-      // user ahs values returned from singin
-      if (user.id) {
-        token.id = parseInt(user.id);
+    jwt: async ({ token, user }) => {
+      if (user?.id) {
+        token.id = user.id;
         token.role = user.role;
+        token.email = user.email!;
+        token.image = user.image ?? "";
+        token.createdAt = user.createdAt;
+        token.updatedAt = user.updatedAt;
       }
       return token;
     },
-    session: async ({ session, token, newSession, trigger, user }) => {
-      console.log("session :: ", session, token, newSession, trigger, user);
-      if (token.id) {
-        // session.user.id = token.id;
+    session: async ({ session, token }) => {
+      if (token?.id) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.email = token.email;
+        session.user.image = token.image;
+        session.user.createdAt = token.createdAt;
+        session.user.updatedAt = token.updatedAt;
       }
       return session;
     },

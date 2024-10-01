@@ -60,7 +60,7 @@ export function LoginForm() {
             role="status"
             className={cn(!!state.errors && "text-sm text-red-500")}
           >
-            {state.errors}
+            {!state.success && state.errors.split(".")[0]}
           </p>
         </form>
       </CardContent>
