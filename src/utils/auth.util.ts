@@ -1,4 +1,6 @@
+import { Role } from "@prisma/client";
 import bcryptjs from "bcryptjs";
+import type { Session, User } from "next-auth";
 
 const SALT_ROUNDS = 10;
 
@@ -29,3 +31,9 @@ export const verifyPassword = async (
 ): Promise<boolean> => {
   return bcryptjs.compare(password, hashedPassword);
 };
+
+
+export const isAdmin = (sessionOrUser: Session | User) => {
+  const role = "role" in sessionOrUser ? sessionOrUser.role : sessionOrUser.user.role
+  return role === Role.SUPER_ADMIN || role === Role.ADMIN
+}
