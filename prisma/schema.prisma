@@ -17,11 +17,13 @@ model User {
     password String
     image    String?
     role     Role    @default(USER)
-    
-    groups   Group[] @relation("GroupMembers")
+
+    groups Group[] @relation("GroupMembers")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    @@index([email, id])
 }
 
 model Event {
@@ -38,11 +40,11 @@ model Event {
 }
 
 model Group {
-    id      Int    @id @default(autoincrement())
-    name    String
+    id   Int    @id @default(autoincrement())
+    name String
 
-    members User[] @relation("GroupMembers")
-    events    Event[]  @relation("EventGroups")
+    members User[]  @relation("GroupMembers")
+    events  Event[] @relation("EventGroups")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
