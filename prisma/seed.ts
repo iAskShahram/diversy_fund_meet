@@ -16,6 +16,17 @@ async function main() {
     },
   });
 
+  await prisma.user.upsert({
+    where: { email: "user@diversyfund.com" },
+    update: {},
+    create: {
+      email: "user@diversyfund.com",
+      name: "Diversy Fund User",
+      password: (await hashPassword("123123"))
+        .hashedPassword,
+      role: Role.USER,
+    },
+  });
   console.log("Super admin created");
 }
 
