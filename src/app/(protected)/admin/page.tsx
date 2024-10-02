@@ -18,8 +18,8 @@ const page = () => {
           <StatCards />
         </div>
         <div className="flex h-full gap-6">
-          <UpcomingMeetings className="h-full w-1/2" />
-          <NewsAndAnnouncements className="h-full w-1/2" />
+          <UpcomingMeetings className="w-1/2" />
+          <NewsAndAnnouncements className="w-1/2" />
         </div>
       </div>
     </div>

@@ -1,11 +1,11 @@
 import React from "react";
+import { AdminNav } from "./_components/admin-nav";
 import { AdminSettings } from "./_components/admin-settings";
 import { Logo } from "../_components/Logo";
-import { AdminNav } from "./_components/admin-nav";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <div className="h-16 border-b">
         <div className="flex h-16 items-center px-8">
           <Logo />
@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </div>
-      <div className="h-[calc(100vh-4rem)]">{children}</div>
+      <div className="min-h-[calc(100vh-4rem)]">{children}</div>
     </div>
   );
 };

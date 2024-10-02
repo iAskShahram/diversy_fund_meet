@@ -1,57 +1,44 @@
-"use client";
-
-import { ServerWrapper } from "@/app/_components/server-wrapper";
-import { useEffect, useRef, useState } from "react";
-import { MeetingCard } from "./meeting-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const UpcommingMeetingsContent = () => {
-  const [height, setHeight] = useState<number | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // if (contentRef.current) {
-    //   // calculate the height of the ref div in px
-    //   const height = contentRef.current.getBoundingClientRect().height;
-    //   console.log({ height });
-    //   setHeight(height);
-    // }
-
-    const observer = new ResizeObserver((entries) => {
-      if (entries[0]?.contentRect) {
-        const newHeight = entries[0].contentRect.height;
-        console.log({ newHeight });
-        setHeight(newHeight);
-      }
-    });
-
-    if (contentRef.current) {
-      observer.observe(contentRef.current);
-    }
-
-    return () => {
-      if (contentRef.current) {
-        observer.unobserve(contentRef.current);
-      }
-    };
-  }, []);
-
   return (
-    <div className="absolute">
-      <div
-        className="flex h-full flex-1 flex-col overflow-hidden overflow-y-auto overflow-x-hidden"
-        //   style={{ maxHeight: height ? `${height}px` : "10vh" }}
-        ref={contentRef}
-      >
-        {Array.from({ length: 10 }).map((_, index) => (
-          <ServerWrapper key={index}>
-            <MeetingCard
-              title="Board Meeting"
-              date="12:00 PM - 2:00 PM"
-              description="Executive Steering Committee"
-            />
-          </ServerWrapper>
+    <div className="flex flex-col justify-between gap-12">
+      <div className="flex h-max flex-col gap-3">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <MeetingCard
+            key={index}
+            title="Board Meeting"
+            date="12:00 PM - 2:00 PM"
+            description="Executive Steering Committee"
+          />
         ))}
       </div>
+      <div>
+        <Link href="/admin/meetings">
+          <Button variant={'outline'} className="w-full">Manage all upcoming meetings</Button>
+        </Link>
+      </div>
+    </div>
+  );
+};
+
+const MeetingCard = ({
+  title,
+  date,
+  description,
+}: {
+  title: string;
+  date: string;
+  description: string;
+}) => {
+  return (
+    <div className="flex flex-col gap-2 rounded-md bg-gray-50 p-4 hover:bg-gray-100">
+      <div className="flex justify-between">
+        <h4 className="font-medium leading-none tracking-tight">{title}</h4>
+        <p className="text-xs text-muted-foreground">{date}</p>
+      </div>
+      <p className="text-xs text-muted-foreground">{description}</p>
     </div>
   );
 };

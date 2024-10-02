@@ -1,8 +1,8 @@
 "use server";
 
+import { formatZodErrors } from "@/lib/utils";
 import { signInSchema } from "@/lib/validators/auth";
 import { signIn } from "@/server/auth";
-import { type ZodError } from "zod";
 
 type State = {
   errors: string;
@@ -66,14 +66,4 @@ export async function signInAction(prevState: State, formData: FormData) {
       errors: "An unexpected error occurred. Please try again.",
     };
   }
-}
-
-function formatZodErrors(zodError: ZodError): string {
-  if (zodError.errors.length > 0) {
-    const firstError = zodError.errors[0];
-    if (firstError) {
-      return `${firstError?.path[0]} - ${firstError?.message}`;
-    }
-  }
-  return "";
 }

@@ -6,8 +6,8 @@ import { type Metadata } from "next";
 import { Providers } from "@/components/ui/providers/providers";
 
 export const metadata: Metadata = {
-  title: "DiveryFund Meet Planner",
-  description: "DiveryFund Meet Planner",
+  title: "Meet Planner",
+  description: "Meet Planner",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

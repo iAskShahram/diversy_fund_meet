@@ -22,8 +22,7 @@ async function main() {
     create: {
       email: "user@diversyfund.com",
       name: "Diversy Fund User",
-      password: (await hashPassword("123123"))
-        .hashedPassword,
+      password: (await hashPassword("123123")).hashedPassword,
       role: Role.USER,
     },
   });
