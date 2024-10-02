@@ -1,3 +1,4 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/server/auth";
-import { LogOut, Settings } from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
 type Group = {
   items: { label: string; icon: React.ElementType; href: string }[];
@@ -22,14 +23,26 @@ const groups: Group[] = [
 
 export const AdminSettings = ({ className }: { className?: string }) => {
   return (
-    <div>
+    <div className="w-40">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="cursor-pointer rounded-full border-none px-4 py-2 shadow-sm hover:bg-gray-100">
-            <Settings className="opacity-60" />
+          <div className="flex w-full cursor-pointer items-center justify-between gap-6 rounded-lg border p-2 text-sm shadow-sm hover:bg-gray-100">
+            <div className="flex items-center space-x-1">
+              <Avatar className="flex h-6 w-6 items-center justify-center">
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  className="h-full w-full"
+                />
+                <div className="h-4 w-4">
+                  <AvatarFallback className="h-full w-full">CN</AvatarFallback>
+                </div>
+              </Avatar>
+              <div>John Doe</div>
+            </div>
+            <ChevronsUpDown className="h-4 w-4 opacity-60" />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className={cn(`w-56`, className)}>
+        <DropdownMenuContent className={cn(`w-40 rounded-xl`, className)}>
           {groups.map((group, index) => (
             <DropdownMenuGroup key={index}>
               {group.items.map((item) => (

@@ -82,7 +82,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
         const isPasswordValid = await verifyPassword(
           values.data.password,
-          user.password as string,
+          user.password,
         );
         if (!isPasswordValid) {
           throw new AccessDenied("3: Invalid email or password.");

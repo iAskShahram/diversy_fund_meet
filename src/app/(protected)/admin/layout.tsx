@@ -7,7 +7,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <div className="border-b">
-        <div className="flex h-16 items-center px-24">
+        <div className="flex h-16 items-center px-8">
           <Logo />
           <AdminNav className="mx-16" />
           <div className="ml-auto flex items-center space-x-4">
