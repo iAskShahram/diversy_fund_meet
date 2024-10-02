@@ -5,7 +5,7 @@ export const UpcomingMeetings = ({ className }: { className?: string }) => {
   return (
     <Card className={cn("col-span-4", className)}>
       <CardHeader>
-        <CardTitle>Overview</CardTitle>
+        <CardTitle>Upcomming Meetings</CardTitle>
       </CardHeader>
       <CardContent className="pl-2">{/* <Overview /> */}</CardContent>
     </Card>
