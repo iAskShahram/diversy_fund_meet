@@ -6,7 +6,7 @@ import { AdminNav } from "./_components/admin-nav";
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
-      <div className="border-b">
+      <div className="h-16 border-b">
         <div className="flex h-16 items-center px-8">
           <Logo />
           <AdminNav className="mx-16" />
@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </div>
-      {children}
+      <div className="h-[calc(100vh-4rem)]">{children}</div>
     </div>
   );
 };
