@@ -9,7 +9,7 @@ import { useState } from "react";
 // import { INITIAL_EVENTS, createEventId } from './event-utils'
 
 let eventGuid = 0;
-const todayStr = new Date().toISOString().replace(/T.*$/, ""); // YYYY-MM-DD of today
+const todayStr = "2024-01-01"; // YYYY-MM-DD of today
 
 export const INITIAL_EVENTS = [
   {

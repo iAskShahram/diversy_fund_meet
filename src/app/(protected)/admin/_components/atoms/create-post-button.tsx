@@ -54,7 +54,7 @@ export const CreatePostButton = () => {
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
+      <AlertDialogTrigger asChild>
         <Button>Create Post +</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-[400px]">

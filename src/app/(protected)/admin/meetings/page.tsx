@@ -1,12 +1,26 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreateMeeting } from "./_components/atoms/create-meeting";
+import { DataTable } from "./_components/data-table";
+import { columns } from "./_components/columns";
+import type { Meeting } from "./_components/columns";
 
 export const metadata = {
   title: "Meetings",
   description: "Manage your meetings & stay up to date",
 };
 
-const page = () => {
+async function getData(): Promise<Meeting[]> {
+  return Array.from({ length: 100 }, (_, index) => ({
+    id: index.toString(),
+    email: `test${index}@test.com`,
+    title: `Meeting ${index}`,
+    meet_link: `https://meet.google.com/abc${index}`,
+    datetime: "2024-01-01 10:00:00",
+  }));
+}
+
+const page = async () => {
+  const data = await getData();
   return (
     <div className="flex h-full flex-col p-8 pt-6">
       <div className="flex h-full flex-col gap-4">
@@ -20,34 +34,19 @@ const page = () => {
         <Tabs defaultValue="upcoming" className="h-full space-y-6">
           <div className="space-between flex items-center">
             <TabsList>
-              <TabsTrigger value="upcoming" >Upcoming</TabsTrigger>
+              <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
               <TabsTrigger value="past">Past</TabsTrigger>
             </TabsList>
             <CreateMeeting />
           </div>
-          <TabsContent value="upcoming" className="border-none p-0 outline-none">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Listen Now - Music
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Top picks for you. Updated daily.
-                </p>
-              </div>
-            </div>
+          <TabsContent
+            value="upcoming"
+            className="border-none p-0 outline-none"
+          >
+            <DataTable columns={columns} data={data} totalRows={data.length} />
           </TabsContent>
           <TabsContent value="past" className="border-none p-0 outline-none">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Listen Now - Podcasts
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Top picks for you. Updated daily.
-                </p>
-              </div>
-            </div>
+            <DataTable columns={columns} data={data} totalRows={data.length} />
           </TabsContent>
         </Tabs>
       </div>
