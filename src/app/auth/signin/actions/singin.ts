@@ -1,7 +1,7 @@
 "use server";
 
 import { formatZodErrors } from "@/lib/utils";
-import { signInSchema } from "@/lib/validators/auth";
+import { signInSchema } from "@/lib/validators/auth.validators";
 import { signIn } from "@/server/auth";
 
 type State = {

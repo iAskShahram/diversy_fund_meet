@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { signInSchema } from "@/lib/validators/auth";
+import { signInSchema } from "@/lib/validators/auth.validators";
 import { verifyPassword } from "@/utils/auth.util";
 import { AccessDenied } from "@auth/core/errors";
 import type { Role } from "@prisma/client";
