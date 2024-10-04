@@ -18,7 +18,7 @@ export const authRouter = createTRPCRouter({
       if (!user) {
         throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
       }
-      const passwordMatch = await verifyPassword(password, user.email!);
+      const passwordMatch = await verifyPassword(password, user.email);
       if (!passwordMatch) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
