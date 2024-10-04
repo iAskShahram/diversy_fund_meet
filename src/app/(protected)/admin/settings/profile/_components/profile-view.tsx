@@ -4,34 +4,52 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { updateUserSchema } from "@/lib/validators/user.validator";
+import { api } from "@/trpc/react";
 import { Copy, FilePen } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const ProfileView = () => {
+  const router = useRouter();
+  const session = useSession();
+  const { mutate: updateUser, isPending } = api.user.update.useMutation({
+    onSuccess: async () => {
+      toast.success("Profile updated");
+      await session.update({
+        name: form.name,
+      });
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
   const [form, setForm] = useState({
     name: "",
   });
 
-  const session = useSession();
+  const handleSubmit = async () => {
+    if (isPending) return;
 
-  const handleSubmit = () => {
-    console.log("submit");
+    const formData = await updateUserSchema.safeParseAsync(form);
+    if (!formData.success) {
+      toast.error(formData.error.message);
+      return;
+    }
+
+    updateUser(formData.data);
   };
 
   useEffect(() => {
     if (session.data) {
+      console.log({ session: session.data });
       setForm({
         name: session.data.user.name ?? "",
       });
     }
-
-    return () => {
-      setForm({
-        name: "",
-      });
-    };
   }, [session.data]);
 
   return (
@@ -70,6 +88,7 @@ export const ProfileView = () => {
           id="email"
           name="email"
           placeholder="johndoe@diversyfund.com"
+          value={session.data?.user.email}
           disabled
         />
       </div>
@@ -81,6 +100,7 @@ export const ProfileView = () => {
           id="affiliate_link"
           name="affiliate_link"
           placeholder="https://diversyfund.com/signup?affiliate=123456"
+          value={session.data?.user.affiliate_link}
           disabled
         />
         <div>
@@ -101,7 +121,7 @@ export const ProfileView = () => {
         </div>
       </div>
       <div className="flex justify-between">
-        <Button type="button" onClick={handleSubmit}>
+        <Button type="button" onClick={handleSubmit} disabled={isPending}>
           Update Profile
         </Button>
       </div>

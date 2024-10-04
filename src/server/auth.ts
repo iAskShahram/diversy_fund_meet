@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import { signInSchema } from "@/lib/validators/auth.validators";
+import { signInSchema } from "@/lib/validators/auth.validator";
 import { verifyPassword } from "@/utils/auth.util";
 import { AccessDenied } from "@auth/core/errors";
 import type { Role } from "@prisma/client";
@@ -103,7 +103,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, session, trigger }) => {
+      if (trigger === "update" && session?.name) {
+        /**
+         * const { update } = useSession();
+         * update({ name: 'Updated' })
+         *
+         * when calling update function from the client side, the session object is updated with the new name.
+         * and user object is returned as undefined.
+         */
+        token.name = session.name;
+      }
       if (user?.id) {
         token.id = user.id;
         token.role = user.role;

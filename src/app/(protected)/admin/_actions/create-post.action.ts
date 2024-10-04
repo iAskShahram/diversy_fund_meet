@@ -1,7 +1,7 @@
 "use server";
 
 import { formatZodErrors } from "@/lib/utils";
-import { createPostSchema } from "@/lib/validators/news-and-announcement";
+import { createPostSchema } from "@/lib/validators/news-and-announcement.validator";
 
 type State = {
   errors: string;

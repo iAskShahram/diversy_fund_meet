@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
+import { Role } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -131,3 +132,13 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * admin protected procedure
+ */
+export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.session.user.role !== Role.ADMIN) {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next({ ctx });
+});
