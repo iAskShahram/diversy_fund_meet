@@ -9,16 +9,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/server/auth";
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
+import Link from "next/link";
 
 type Group = {
   items: { label: string; icon: React.ElementType; href: string }[];
 };
 
 const groups: Group[] = [
-  // {
-  //   items: [{ label: "Profile", icon: User, href: "/profile" }],
-  // },
+  {
+    items: [
+      { label: "Settings", icon: Settings2, href: "/admin/settings/profile" },
+    ],
+  },
 ];
 
 export const AdminSettings = ({ className }: { className?: string }) => {
@@ -46,10 +49,12 @@ export const AdminSettings = ({ className }: { className?: string }) => {
           {groups.map((group, index) => (
             <DropdownMenuGroup key={index}>
               {group.items.map((item) => (
-                <DropdownMenuItem key={item.label} className="cursor-pointer">
-                  {item.icon && <item.icon className="mr-2 h-4 w-4" />}
-                  {item.label}
-                </DropdownMenuItem>
+                <Link href={item.href} key={item.label}>
+                  <DropdownMenuItem className="cursor-pointer">
+                    {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                    {item.label}
+                  </DropdownMenuItem>
+                </Link>
               ))}
               {group.items.length > 0 && <DropdownMenuSeparator />}
             </DropdownMenuGroup>

@@ -89,9 +89,6 @@ importers:
       '@trpc/server':
         specifier: ^11.0.0-rc.446
         version: 11.0.0-rc.552
-      '@types/bcryptjs':
-        specifier: ^2.4.6
-        version: 2.4.6
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -156,6 +153,9 @@ importers:
         specifier: ^3.23.3
         version: 3.23.8
     devDependencies:
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
       '@types/eslint':
         specifier: ^8.56.10
         version: 8.56.12

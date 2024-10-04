@@ -1,7 +1,7 @@
 import React from "react";
+import { Logo } from "../_components/Logo";
 import { AdminNav } from "./_components/admin-nav";
 import { AdminSettings } from "./_components/admin-settings";
-import { Logo } from "../_components/Logo";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

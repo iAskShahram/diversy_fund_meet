@@ -14,6 +14,7 @@ declare module "next-auth" {
       role: Role;
       email: string;
       image: string;
+      affiliate_link: string;
       createdAt: Date;
       updatedAt: Date;
     } & DefaultSession["user"];
@@ -24,6 +25,7 @@ declare module "next-auth" {
     role: Role;
     email?: string | null | undefined;
     image?: string | null | undefined;
+    affiliate_link?: string | null | undefined;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -36,6 +38,7 @@ declare module "@auth/core/jwt" {
     role: Role;
     email: string;
     image: string;
+    affiliate_link?: string | null | undefined;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -75,7 +78,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email: credentials.email as string,
           },
         });
-
 
         if (!user) {
           throw new AccessDenied("2: Invalid email or password.");

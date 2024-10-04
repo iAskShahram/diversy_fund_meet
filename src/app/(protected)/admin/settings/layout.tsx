@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { SidebarNav } from "@/app/(protected)/admin/settings/_components/sidebar-nav";
 import { Separator } from "@/components/ui/separator";
-import { SidebarNav } from "@/app/(protected)/admin/profile/_components/sidebar-nav";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Forms",
@@ -12,11 +13,11 @@ export const metadata: Metadata = {
 const sidebarNavItems = [
   {
     title: "Profile",
-    href: "/admin/profile",
+    href: "/admin/settings/profile",
   },
   {
-    title: "Account",
-    href: "/admin/profile/change-password",
+    title: "Change Password",
+    href: "/admin/settings/change-password",
   },
 ];
 

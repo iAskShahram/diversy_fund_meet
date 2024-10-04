@@ -12,6 +12,7 @@ async function main() {
       name: "Diversy Fund",
       password: (await hashPassword(env.SUPER_ADMIN_DEFAULT_PASSWORD))
         .hashedPassword,
+      affiliate_link: "https://diversyfund.com/signup?affiliate=123456",
       role: Role.SUPER_ADMIN,
     },
   });
@@ -24,6 +25,7 @@ async function main() {
       name: "Diversy Fund User",
       password: (await hashPassword("123123")).hashedPassword,
       role: Role.USER,
+      affiliate_link: "https://diversyfund.com/signup?affiliate=123457",
     },
   });
   console.log("Super admin created");
