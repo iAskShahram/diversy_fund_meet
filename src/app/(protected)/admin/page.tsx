@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { NewsAndAnnouncements } from "./_components/news-and-announcements";
+import { Announcements } from "./_components/announcements";
 import { StatCards } from "./_components/stat-cards";
 import { UpcomingMeetings } from "./_components/upcoming-meetings";
 
@@ -19,7 +19,7 @@ const page = () => {
         </div>
         <div className="flex h-full gap-6">
           <UpcomingMeetings className="w-1/2" />
-          <NewsAndAnnouncements className="w-1/2" />
+          <Announcements className="w-1/2" />
         </div>
       </div>
     </div>

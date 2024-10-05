@@ -11,7 +11,7 @@ import { UpcommingMeetingsContent } from "./upcomming-meetings-content";
 export const UpcomingMeetings = ({ className }: { className?: string }) => {
   // get the stats here and pass it to the content
   return (
-    <Card className={cn("", className)}>
+    <Card className={cn("h-fit", className)}>
       <CardHeader>
         <CardTitle>Upcomming Meetings</CardTitle>
         <CardDescription>12 upcoming meetings this month</CardDescription>
