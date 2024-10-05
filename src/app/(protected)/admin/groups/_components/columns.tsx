@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@tanstack/react-table";
-import { FilePen, UserRound } from "lucide-react";
+import { FilePen, UserRound, Users } from "lucide-react";
 import { z } from "zod";
 import { DataTableColumnHeader } from "../../meetings/_components/dataTable/data-table-column-header";
 
@@ -20,6 +20,14 @@ export const columns: ColumnDef<Meeting>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Group Name" />
     ),
+    cell: ({ row }) => {
+      const group = row.original;
+      return (
+        <div className="flex flex-row items-center gap-2 px-4">
+          <Users className="h-5 w-5 text-primary" /> {group.name}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "usersCount",
