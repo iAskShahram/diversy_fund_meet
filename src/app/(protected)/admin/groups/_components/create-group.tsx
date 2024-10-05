@@ -26,7 +26,11 @@ export const CreateGroup = () => {
   const [userIDs, setUserIDs] = useState<string[]>([]);
   const [error, setError] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const { data: users } = api.user.getAll.useQuery();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const { data: users, refetch } = api.user.getAll.useQuery(undefined, {
+    enabled: isDialogOpen,
+  });
 
   const { mutate: createGroup, isPending } = api.group.create.useMutation({
     onSuccess: () => {
@@ -45,8 +49,15 @@ export const CreateGroup = () => {
     createGroup({ name, userIDs });
   };
 
+  const handleDialogOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (open) {
+      void refetch();
+    }
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <AlertDialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
