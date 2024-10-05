@@ -33,7 +33,7 @@ export function usePaginationParam() {
       10,
     );
 
-    if (isNaN(_value) || _value < 0 || (max !== -1 && _value > max)) {
+    if (isNaN(_value) || _value <= 0 || (max !== -1 && _value > max)) {
       return defaultValue;
     }
 
