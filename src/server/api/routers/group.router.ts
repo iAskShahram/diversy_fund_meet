@@ -1,6 +1,8 @@
 import {
   createGroupSchema,
+  getGroupUsersSchema,
   paginationQuerySchema,
+  updateGroupSchema,
 } from "@/lib/validators/group.validator";
 import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
 
@@ -48,5 +50,60 @@ export const groupRouter = createTRPCRouter({
         groups: groupsWithCount,
         totalCount: await totalCount,
       };
+    }),
+
+  getUsers: adminProcedure
+    .input(getGroupUsersSchema)
+    .query(async ({ ctx, input }) => {
+      const { groupId } = input;
+      const groupUsers = await ctx.db.group.findUnique({
+        where: { id: groupId },
+        select: {
+          id: true,
+          name: true,
+          users: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      const userIds = groupUsers?.users.map((user) => user.id) ?? [];
+      const notGroupUsers = await ctx.db.user.findMany({
+        where: {
+          id: {
+            notIn: userIds,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      });
+
+      return {
+        groupUsers,
+        notGroupUsers,
+      };
+    }),
+
+  update: adminProcedure
+    .input(updateGroupSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { groupId, name, userIDs } = input;
+      const group = await ctx.db.group.update({
+        where: { id: groupId },
+        data: {
+          name,
+          users: {
+            set: userIDs?.map((id) => ({ id })) ?? [],
+          },
+        },
+      });
+      return group;
     }),
 });

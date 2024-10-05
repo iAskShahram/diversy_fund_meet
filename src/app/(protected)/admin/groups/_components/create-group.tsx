@@ -24,7 +24,6 @@ export const CreateGroup = () => {
   const router = useRouter();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const [userIDs, setUserIDs] = useState<string[]>([]);
-  const [error, setError] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -40,7 +39,7 @@ export const CreateGroup = () => {
       router.refresh();
     },
     onError: (error) => {
-      setError(error.message);
+      toast.error(error.message);
     },
   });
 
@@ -108,10 +107,6 @@ export const CreateGroup = () => {
                 />
               </div>
             </div>
-            {/* errors can be destructured from useForm  */}
-            <p role="status" className={"text-sm text-red-500"}>
-              {error}
-            </p>
           </div>
           <AlertDialogFooter className="mt-6 flex !justify-between">
             <AlertDialogCancel ref={cancelRef}>Cancel</AlertDialogCancel>

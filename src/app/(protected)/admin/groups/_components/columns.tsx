@@ -5,6 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { FilePen, UserRound, Users } from "lucide-react";
 import { z } from "zod";
 import { DataTableColumnHeader } from "../../meetings/_components/dataTable/data-table-column-header";
+import { EditGroup } from "./edit-group";
 
 export const groupSchema = z.object({
   id: z.string(),
@@ -53,10 +54,7 @@ export const columns: ColumnDef<Meeting>[] = [
 
       return (
         <div className="flex items-center gap-2">
-          <Button variant={"outline"}>
-            <FilePen className="mr-2 h-4 w-4" />
-            Edit Group
-          </Button>
+          <EditGroup groupId={group.id} />
         </div>
       );
     },
