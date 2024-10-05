@@ -15,7 +15,7 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
               {children}
               <Toaster
                 position="bottom-right"
-                duration={2300}
+                duration={5000}
                 closeButton
                 pauseWhenPageIsHidden
                 richColors

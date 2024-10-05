@@ -17,12 +17,13 @@ model User {
     password       String
     image          String?
     role           Role    @default(USER)
-    affiliate_link String  @default("")
+    affiliateLink String  @default("")
 
     groups Group[] @relation("GroupMembers")
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    announcements Announcement[]
 
     @@index([email, id])
 }
@@ -52,9 +53,12 @@ model Group {
 }
 
 model Announcement {
-    id      String @id @default(cuid())
-    title   String
-    content String
+    id    String @id @default(cuid())
+    title String
+    url   String
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

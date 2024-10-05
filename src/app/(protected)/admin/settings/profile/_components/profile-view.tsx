@@ -93,14 +93,14 @@ export const ProfileView = () => {
         />
       </div>
       <div className="flex flex-col gap-2">
-        <Label htmlFor="affiliate_link" className="font-semibold">
+        <Label htmlFor="affiliateLink" className="font-semibold">
           Affiliate Link
         </Label>
         <Input
-          id="affiliate_link"
-          name="affiliate_link"
-          placeholder="https://diversyfund.com/signup?affiliate=123456"
-          value={session.data?.user.affiliate_link}
+          id="affiliateLink"
+          name="affiliateLink"
+          placeholder={session.data?.user.affiliateLink}
+          value={session.data?.user.affiliateLink}
           disabled
         />
         <div>
@@ -110,7 +110,7 @@ export const ProfileView = () => {
             className="mt-1"
             onClick={async () => {
               await navigator.clipboard.writeText(
-                session.data?.user.affiliate_link ?? "",
+                session.data?.user.affiliateLink ?? "",
               );
               toast.success("Link copied to clipboard");
             }}

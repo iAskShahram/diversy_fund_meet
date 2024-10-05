@@ -14,7 +14,7 @@ declare module "next-auth" {
       role: Role;
       email: string;
       image: string;
-      affiliate_link: string;
+      affiliateLink: string;
       createdAt: Date;
       updatedAt: Date;
     } & DefaultSession["user"];
@@ -23,9 +23,9 @@ declare module "next-auth" {
   interface User {
     id?: string;
     role: Role;
-    email?: string | null | undefined;
-    image?: string | null | undefined;
-    affiliate_link?: string | null | undefined;
+    email?: string | null;
+    image?: string | null;
+    affiliateLink: string;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -38,7 +38,7 @@ declare module "@auth/core/jwt" {
     role: Role;
     email: string;
     image: string;
-    affiliate_link?: string | null | undefined;
+    affiliateLink: string;
     createdAt: Date;
     updatedAt: Date;
   }
@@ -96,6 +96,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           role: user.role,
           email: user.email,
           image: user.image,
+          affiliateLink: user.affiliateLink,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         } satisfies User;
@@ -119,6 +120,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.role = user.role;
         token.email = user.email!;
         token.image = user.image ?? "";
+        token.affiliateLink = user.affiliateLink;
         token.createdAt = user.createdAt;
         token.updatedAt = user.updatedAt;
       }
@@ -130,6 +132,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.role = token.role;
         session.user.email = token.email;
         session.user.image = token.image;
+        session.user.affiliateLink = token.affiliateLink;
         session.user.createdAt = token.createdAt;
         session.user.updatedAt = token.updatedAt;
       }

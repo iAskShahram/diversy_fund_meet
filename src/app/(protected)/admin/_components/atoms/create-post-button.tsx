@@ -1,7 +1,5 @@
 "use client";
 
-import { createPostAction } from "@/app/(protected)/admin/_actions/create-post.action";
-import { SubmitButton } from "@/app/_components/submit-button";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -13,44 +11,49 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { useFormState } from "react-dom";
+import { createAnnouncementSchema } from "@/lib/validators/announcement.validator";
+import { api } from "@/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type { z } from "zod";
 
-const initialState = {
-  errors: "",
-  success: false,
-};
+type CreatePostForm = z.infer<typeof createAnnouncementSchema>;
 
-const useIsClient = () => {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  return isClient;
+const defaultValues: CreatePostForm = {
+  title: "",
+  url: "",
 };
 
 export const CreatePostButton = () => {
-  const [state, formAction] = useFormState(createPostAction, initialState);
-  const cancelRef = useRef<HTMLButtonElement>(null);
-  const router = useRouter();
-  const isClient = useIsClient();
+  const form = useForm<CreatePostForm>({
+    resolver: zodResolver(createAnnouncementSchema),
+    defaultValues,
+    mode: "onChange",
+  });
+  const { mutate: createAnnouncement, isPending } =
+    api.announcement.create.useMutation({
+      onSuccess: () => {
+        form.reset(defaultValues);
+        toast.success("Announcement created successfully");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
 
-  useEffect(() => {
-    if (state?.success) {
-      router.refresh();
-      cancelRef.current?.click();
-    }
-  }, [state?.success, router]);
-
-  if (!isClient) {
-    return null;
-  }
+  const onSubmit = async (data: CreatePostForm) => {
+    createAnnouncement(data);
+  };
 
   return (
     <AlertDialog>
@@ -58,45 +61,64 @@ export const CreatePostButton = () => {
         <Button>Create Post +</Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-[400px]">
-        <form action={formAction}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Create new post</AlertDialogTitle>
-            <AlertDialogDescription>
-              Create new post in one click
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="mt-6">
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  type="text"
-                  placeholder="Title"
-                  required
-                />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Create new post</AlertDialogTitle>
+              <AlertDialogDescription>
+                Create new post in one click
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="mt-6">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Title"
+                            {...field}
+                            disabled={isPending}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Url</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Url"
+                            {...field}
+                            disabled={isPending}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="url">Url</Label>
-                <Input id="url" name="url" type="text" required />
-              </div>
-              {/* <SubmitButton txt="Publish" /> */}
             </div>
-            <p
-              role="status"
-              className={cn(!!state?.errors && "text-sm text-red-500")}
-            >
-              {!state?.success && state?.errors.split(".")[0]}
-            </p>
-          </div>
-          <AlertDialogFooter className="mt-6 flex !justify-between">
-            <AlertDialogCancel ref={cancelRef}>Cancel</AlertDialogCancel>
-            {/* <AlertDialogAction> */}
-            <SubmitButton txt="Publish" className="w-auto" />
-            {/* </AlertDialogAction> */}
-          </AlertDialogFooter>
-        </form>
+            <AlertDialogFooter className="mt-6 flex !justify-between">
+              <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? "Publishing..." : "Publish"}
+              </Button>
+            </AlertDialogFooter>
+          </form>
+        </Form>
       </AlertDialogContent>
     </AlertDialog>
   );
