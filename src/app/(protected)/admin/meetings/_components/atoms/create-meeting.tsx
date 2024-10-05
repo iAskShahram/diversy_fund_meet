@@ -70,7 +70,7 @@ export const CreateMeeting = () => {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="groups">Groups</Label>
+                <Label htmlFor="groups">Date & Time</Label>
                 <DateTimePicker
                   hourCycle={12}
                   value={datetime}

@@ -12,14 +12,14 @@ datasource db {
 
 model User {
     id             String  @id @default(cuid())
-    name           String?
+    name           String
     email          String  @unique
     password       String
     image          String?
     role           Role    @default(USER)
     affiliateLink String  @default("")
 
-    groups Group[] @relation("GroupMembers")
+    groups Group[] @relation("GroupUsers")
 
     createdAt     DateTime       @default(now())
     updatedAt     DateTime       @updatedAt
@@ -45,7 +45,7 @@ model Group {
     id   String @id @default(cuid())
     name String
 
-    members User[]  @relation("GroupMembers")
+    users User[]  @relation("GroupUsers")
     events  Event[] @relation("EventGroups")
 
     createdAt DateTime @default(now())

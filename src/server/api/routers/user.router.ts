@@ -1,5 +1,9 @@
 import { updateUserSchema } from "@/lib/validators/user.validator";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -14,4 +18,9 @@ export const userRouter = createTRPCRouter({
       const { password, ...userWithoutPassword } = user;
       return userWithoutPassword;
     }),
+
+  getAll: adminProcedure.query(async ({ ctx }) => {
+    const users = await ctx.db.user.findMany();
+    return users;
+  }),
 });

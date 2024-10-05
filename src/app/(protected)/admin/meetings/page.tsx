@@ -14,7 +14,7 @@ async function getData(): Promise<Meeting[]> {
     id: index.toString(),
     email: `test${index}@test.com`,
     title: `Meeting ${index}`,
-    meet_link: `https://meet.google.com/abc${index}`,
+    meet_link: `https://meet.google.com/${index}`,
     datetime: "2024-01-01 10:00:00",
   }));
 }
@@ -43,10 +43,10 @@ const page = async () => {
             value="upcoming"
             className="border-none p-0 outline-none"
           >
-            <DataTable columns={columns} data={data} totalRows={data.length} />
+            <DataTable columns={columns} data={data} totalCount={data.length} />
           </TabsContent>
           <TabsContent value="past" className="border-none p-0 outline-none">
-            <DataTable columns={columns} data={data} totalRows={data.length} />
+            <DataTable columns={columns} data={data} totalCount={data.length} />
           </TabsContent>
         </Tabs>
       </div>

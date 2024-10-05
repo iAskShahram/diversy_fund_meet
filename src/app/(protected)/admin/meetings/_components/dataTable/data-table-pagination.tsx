@@ -14,6 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { usePaginationParam } from "@/utils/hooks/usePaginationParam.hook";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -22,22 +25,35 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
 }: DataTablePaginationProps<TData>) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const pageSizes = useMemo(() => [10, 15, 20], []);
+
+  const getPaginationParam = usePaginationParam();
+
+  const perPage = getPaginationParam("perPage", 10, 100);
+  const page = getPaginationParam("page", 1);
+  const nextPage = Math.min(page + 1, table.getPageCount());
+  const canNextPage = table.getPageCount() > page;
+  const canPrevPage = page > 1;
+
   return (
     <div className="flex items-center justify-between px-2">
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <Select
-            value={`${table.getState().pagination.pageSize}`}
+            value={`${perPage}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value));
+              router.push(`${pathname}?perPage=${value}&page=${page}`);
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
+              <SelectValue placeholder={perPage} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 15, 20].map((pageSize) => (
+              {pageSizes.map((pageSize) => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
@@ -46,15 +62,16 @@ export function DataTablePagination<TData>({
           </Select>
         </div>
         <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-          Page {table.getState().pagination.pageIndex + 1} of{" "}
-          {table.getPageCount()}
+          Page {page} of {table.getPageCount()}
         </div>
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => {
+              router.push(`${pathname}?perPage=${perPage}&page=1`);
+            }}
+            disabled={!canPrevPage}
           >
             <span className="sr-only">Go to first page</span>
             <DoubleArrowLeftIcon className="h-4 w-4" />
@@ -62,8 +79,12 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => {
+              router.push(
+                `${pathname}?perPage=${perPage}&page=${page - 1}`,
+              );
+            }}
+            disabled={!canPrevPage}
           >
             <span className="sr-only">Go to previous page</span>
             <ChevronLeftIcon className="h-4 w-4" />
@@ -71,8 +92,10 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => {
+              router.push(`${pathname}?perPage=${perPage}&page=${nextPage}`);
+            }}
+            disabled={!canNextPage}
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRightIcon className="h-4 w-4" />
@@ -80,8 +103,12 @@ export function DataTablePagination<TData>({
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
+            onClick={() => {
+              router.push(
+                `${pathname}?perPage=${perPage}&page=${table.getPageCount()}`,
+              );
+            }}
+            disabled={!canNextPage}
           >
             <span className="sr-only">Go to last page</span>
             <DoubleArrowRightIcon className="h-4 w-4" />

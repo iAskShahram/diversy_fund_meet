@@ -4,7 +4,7 @@ import { Announcements } from "./_components/announcements";
 import { StatCards } from "./_components/stat-cards";
 import { UpcomingMeetings } from "./_components/upcoming-meetings";
 
-const page = () => {
+const Page = () => {
   return (
     <div className="flex h-full flex-col p-8 pt-6">
       <div className="flex h-full flex-col gap-4">
@@ -26,4 +26,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
