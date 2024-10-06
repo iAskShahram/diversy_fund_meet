@@ -16,8 +16,8 @@ const links = [
     href: "/admin/meetings",
   },
   {
-    label: "Directory",
-    href: "/admin/directory",
+    label: "Users",
+    href: "/admin/users",
   },
   {
     label: "Groups",

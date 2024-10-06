@@ -17,7 +17,6 @@ import { MultiSelect, type Option } from "@/components/ui/multi-select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/trpc/react";
 import { FilePen } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -26,7 +25,6 @@ export const EditGroup = ({ groupId }: { groupId: string }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userIDs, setUserIDs] = useState<string[]>([]);
   const [name, setName] = useState<string>("");
-  // const router = useRouter();
   const utils = api.useUtils();
 
   const { data, isPending, refetch } = api.group.getUsers.useQuery(
@@ -40,7 +38,6 @@ export const EditGroup = ({ groupId }: { groupId: string }) => {
   const { mutate: updateGroup, isPending: isUpdating } =
     api.group.update.useMutation({
       onSuccess: async () => {
-        // router.refresh();
         await utils.group.getAll.invalidate();
         toast.success("Group updated successfully");
         setIsDialogOpen(false);
@@ -128,7 +125,6 @@ export const EditGroup = ({ groupId }: { groupId: string }) => {
                     }
                     onValueChange={setUserIDs}
                     defaultValue={userIDs}
-
                     placeholder="Select users"
                     variant="inverted"
                     modalPopover={true}

@@ -1,7 +1,7 @@
+import { paginationQuerySchema } from "@/lib/validators/common.validator";
 import {
   createGroupSchema,
   getGroupUsersSchema,
-  paginationQuerySchema,
   updateGroupSchema,
 } from "@/lib/validators/group.validator";
 import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";

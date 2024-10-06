@@ -27,9 +27,12 @@ export const CreateGroup = () => {
   const [name, setName] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const { data: users, refetch } = api.user.getAll.useQuery(undefined, {
-    enabled: isDialogOpen,
-  });
+  const { data: users, refetch } = api.user.getAll.useQuery(
+    {},
+    {
+      enabled: isDialogOpen,
+    },
+  );
 
   const { mutate: createGroup, isPending } = api.group.create.useMutation({
     onSuccess: () => {
@@ -90,7 +93,7 @@ export const CreateGroup = () => {
                 <Label htmlFor="groups">Add Users</Label>
                 <MultiSelect
                   options={
-                    users?.map(
+                    users?.users?.map(
                       (user) =>
                         ({
                           label: user.name ?? "",
