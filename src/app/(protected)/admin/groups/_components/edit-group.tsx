@@ -70,6 +70,8 @@ export const EditGroup = ({ groupId }: { groupId: string }) => {
     setIsDialogOpen(open);
     if (open) {
       void refetch();
+    } else {
+      cancelRef.current?.click();
     }
   };
 

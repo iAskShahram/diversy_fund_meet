@@ -55,6 +55,8 @@ export const CreateGroup = () => {
     setIsDialogOpen(open);
     if (open) {
       void refetch();
+    } else {
+      cancelRef.current?.click();
     }
   };
 

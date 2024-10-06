@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { signOut } from "@/server/auth";
+import { auth, signOut } from "@/server/auth";
 import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
 import Link from "next/link";
 
@@ -24,9 +24,10 @@ const groups: Group[] = [
   },
 ];
 
-export const AdminSettings = ({ className }: { className?: string }) => {
+export const AdminSettings = async ({ className }: { className?: string }) => {
+  const session = await auth();
   return (
-    <div className="w-40">
+    <div >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex w-full cursor-pointer items-center justify-between gap-6 rounded-lg border p-2 text-sm shadow-sm hover:bg-gray-100">
@@ -40,7 +41,7 @@ export const AdminSettings = ({ className }: { className?: string }) => {
                   <AvatarFallback className="h-full w-full">CN</AvatarFallback>
                 </div>
               </Avatar>
-              <div>John Doe</div>
+              <div>{session?.user.name}</div>
             </div>
             <ChevronsUpDown className="h-4 w-4 opacity-60" />
           </div>
