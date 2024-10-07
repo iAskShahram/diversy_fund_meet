@@ -18,17 +18,16 @@ import { DataTableColumnHeader } from "./dataTable/data-table-column-header";
 
 export const MeetingSchema = z.object({
   id: z.string(),
-  email: z.string(),
   title: z.string(),
-  meet_link: z.string(),
-  datetime: z.string(),
+  googleMeetLink: z.string(),
+  dateTime: z.date(),
 });
 
 export type Meeting = z.infer<typeof MeetingSchema>;
 
 export const columns: ColumnDef<Meeting>[] = [
   {
-    accessorKey: "datetime",
+    accessorKey: "dateTime",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Date & Time" />
     ),
@@ -39,21 +38,13 @@ export const columns: ColumnDef<Meeting>[] = [
       <DataTableColumnHeader column={column} title="Meeting Name" />
     ),
   },
-
   {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
-  },
-
-  {
-    accessorKey: "meet_link",
+    accessorKey: "googleMeetLink",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Google Meet Link" />
     ),
     cell: ({ row }) => {
-      const meet_link = row.getValue("meet_link");
+      const meet_link = row.getValue("googleMeetLink");
       return (
         <Button
           className="border p-2"

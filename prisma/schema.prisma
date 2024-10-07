@@ -33,7 +33,7 @@ model Event {
     title          String
     description    String?
     dateTime       DateTime
-    googleMeetLink String?
+    googleMeetLink String
 
     groups Group[] @relation("EventGroups")
 

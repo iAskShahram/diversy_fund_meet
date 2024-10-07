@@ -44,6 +44,8 @@ export const AddUser = () => {
     onSuccess: async () => {
       await utils.user.getAll.invalidate();
       toast.success("User created successfully");
+      cancelRef.current?.click();
+      setIsDialogOpen(false);
     },
     onError: (error) => {
       toast.error(error.message);

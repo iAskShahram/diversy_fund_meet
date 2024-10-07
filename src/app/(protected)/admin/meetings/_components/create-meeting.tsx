@@ -29,6 +29,7 @@ export const CreateMeeting = () => {
   const [datetime, setDateTime] = useState<Date | undefined>(undefined);
   const [title, setTitle] = useState<string>("");
 
+  const utils = api.useUtils();
   const { data: groups, isPending } = api.group.getAll.useQuery(
     {
       page: 1,
@@ -40,7 +41,8 @@ export const CreateMeeting = () => {
   );
   const { mutate: createEvent, isPending: isCreating } =
     api.event.create.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
+        await utils.event.getAll.invalidate();
         toast.success("Meeting created successfully");
         cancelRef.current?.click();
         setIsDialogOpen(false);
@@ -64,10 +66,11 @@ export const CreateMeeting = () => {
   };
 
   const handleDialogOpenChange = (open: boolean) => {
-    if (open) {
-      void router.refresh();
-    } else {
+    if (!open) {
       cancelRef.current?.click();
+      setSelectedGroups([]);
+      setTitle("");
+      setDateTime(undefined);
     }
     setIsDialogOpen(open);
   };

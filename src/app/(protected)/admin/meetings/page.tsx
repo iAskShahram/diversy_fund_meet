@@ -1,26 +1,39 @@
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateMeeting } from "./_components/atoms/create-meeting";
-import { DataTable } from "./_components/data-table";
+import { EventStatus } from "@/lib/validators/event.validator";
+import { api } from "@/trpc/react";
+import { usePaginationParam } from "@/utils/hooks/usePaginationParam.hook";
+import { useRouter, useSearchParams } from "next/navigation";
 import { columns } from "./_components/columns";
-import type { Meeting } from "./_components/columns";
+import { CreateMeeting } from "./_components/create-meeting";
+import { DataTable } from "./_components/data-table";
 
-export const metadata = {
-  title: "Meetings",
-  description: "Manage your meetings & stay up to date",
-};
+const Page = () => {
+  const getPaginationParam = usePaginationParam();
+  const perPage = getPaginationParam("perPage", 10, 100);
+  const page = getPaginationParam("page", 1);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-async function getData(): Promise<Meeting[]> {
-  return Array.from({ length: 100 }, (_, index) => ({
-    id: index.toString(),
-    email: `test${index}@test.com`,
-    title: `Meeting ${index}`,
-    meet_link: `https://meet.google.com/${index}`,
-    datetime: "2024-01-01 10:00:00",
-  }));
-}
+  const status = Object.values(EventStatus).includes(
+    searchParams.get("status") as EventStatus,
+  )
+    ? searchParams.get("status")
+    : EventStatus.UPCOMING;
 
-const page = async () => {
-  const data = await getData();
+  const { data: events } = api.event.getAll.useQuery({
+    perPage,
+    page,
+    status,
+  });
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const _searchParams = new URLSearchParams(searchParams.toString());
+    _searchParams.set("status", e.currentTarget.name);
+    router.push(`/admin/meetings?${_searchParams.toString()}`);
+  };
+
   return (
     <div className="flex h-full flex-col p-8 pt-6">
       <div className="flex h-full flex-col gap-4">
@@ -31,22 +44,49 @@ const page = async () => {
           </p>
         </div>
 
-        <Tabs defaultValue="upcoming" className="h-full space-y-6">
+        <Tabs
+          defaultValue={EventStatus.UPCOMING}
+          value={status as EventStatus}
+          className="h-full space-y-6"
+        >
           <div className="space-between flex items-center">
             <TabsList>
-              <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
-              <TabsTrigger value="past">Past</TabsTrigger>
+              <TabsTrigger
+                value={EventStatus.UPCOMING}
+                name={EventStatus.UPCOMING}
+                onClick={handleClick}
+              >
+                Upcoming
+              </TabsTrigger>
+              <TabsTrigger
+                value={EventStatus.PAST}
+                name={EventStatus.PAST}
+                onClick={handleClick}
+              >
+                Past
+              </TabsTrigger>
             </TabsList>
             <CreateMeeting />
           </div>
           <TabsContent
-            value="upcoming"
+            value={EventStatus.UPCOMING}
             className="border-none p-0 outline-none"
           >
-            <DataTable columns={columns} data={data} totalCount={data.length} />
+            <DataTable
+              columns={columns}
+              data={events?.events ?? []}
+              totalCount={events?.totalCount ?? 0}
+            />
           </TabsContent>
-          <TabsContent value="past" className="border-none p-0 outline-none">
-            <DataTable columns={columns} data={data} totalCount={data.length} />
+          <TabsContent
+            value={EventStatus.PAST}
+            className="border-none p-0 outline-none"
+          >
+            <DataTable
+              columns={columns}
+              data={events?.events ?? []}
+              totalCount={events?.totalCount ?? 0}
+            />
           </TabsContent>
         </Tabs>
       </div>
@@ -54,4 +94,4 @@ const page = async () => {
   );
 };
 
-export default page;
+export default Page;

@@ -1,5 +1,9 @@
 import { env } from "@/env";
-import { createEventSchema } from "@/lib/validators/event.validator";
+import {
+  createEventSchema,
+  EventStatus,
+  getAllEventsSchema,
+} from "@/lib/validators/event.validator";
 import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
 import { Role } from "@prisma/client";
 import { google } from "googleapis";
@@ -71,6 +75,39 @@ export const eventRouter = createTRPCRouter({
 
       return event;
     }),
+
+  getAll: adminProcedure
+    .input(getAllEventsSchema)
+    .query(async ({ ctx, input }) => {
+      const { perPage, page, status } = input;
+
+      const queryObj: {
+        dateTime?: {
+          gte?: Date;
+          lte?: Date;
+        };
+      } = {};
+      if (status === EventStatus.UPCOMING) {
+        queryObj.dateTime = {
+          gte: new Date(),
+        };
+      }
+      if (status === EventStatus.PAST) {
+        queryObj.dateTime = {
+          lte: new Date(),
+        };
+      }
+      const events = await ctx.db.event.findMany({
+        where: queryObj,
+        skip: (page - 1) * perPage,
+        take: perPage,
+      });
+
+      const totalCount = await ctx.db.event.count({
+        where: queryObj,
+      });
+      return { events, totalCount };
+    }),
 });
 
 export async function createGoogleMeet({
@@ -81,7 +118,9 @@ export async function createGoogleMeet({
   startDateTimeUTC: Date;
   title: string;
   attendeeEmails: string[];
-}): Promise<{ success: boolean; meetLink: string | null }> {
+}): Promise<
+  { success: true; meetLink: string } | { success: false; meetLink: null }
+> {
   const event = {
     summary: title,
     start: {
@@ -89,7 +128,9 @@ export async function createGoogleMeet({
       timeZone: "UTC",
     },
     end: {
-      dateTime: new Date(startDateTimeUTC.getTime() + 60 * 60 * 1000).toISOString(),
+      dateTime: new Date(
+        startDateTimeUTC.getTime() + 60 * 60 * 1000,
+      ).toISOString(),
       timeZone: "UTC",
     },
     attendees: attendeeEmails.map((email) => ({ email })),
