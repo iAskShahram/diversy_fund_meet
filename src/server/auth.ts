@@ -44,6 +44,8 @@ declare module "@auth/core/jwt" {
   }
 }
 
+const invalidCredentialsError = "Invalid email or password";
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
@@ -71,7 +73,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           password: credentials.password,
         });
         if (!values.success) {
-          throw new AccessDenied("1: Invalid email or password.");
+          throw new AccessDenied(invalidCredentialsError);
         }
         const user = await db.user.findUnique({
           where: {
@@ -80,14 +82,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (!user) {
-          throw new AccessDenied("2: Invalid email or password.");
+          throw new AccessDenied(invalidCredentialsError);
         }
         const isPasswordValid = await verifyPassword(
           values.data.password,
           user.password,
         );
         if (!isPasswordValid) {
-          throw new AccessDenied("3: Invalid email or password.");
+          throw new AccessDenied(invalidCredentialsError);
         }
 
         return {

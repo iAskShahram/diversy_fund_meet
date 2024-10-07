@@ -15,6 +15,7 @@ import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DataTableColumnHeader } from "./dataTable/data-table-column-header";
+import { format } from "date-fns";
 
 export const MeetingSchema = z.object({
   id: z.string(),
@@ -31,6 +32,10 @@ export const columns: ColumnDef<Meeting>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Date & Time" />
     ),
+    cell: ({ row }) => {
+      const dateTime = row.getValue("dateTime");
+      return <div>{format(dateTime as Date, "PPpp")}</div>;
+    },
   },
   {
     accessorKey: "title",

@@ -1,7 +1,7 @@
 import { auth } from "@/server/auth";
-import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
 import { Role } from "@prisma/client";
+import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
 import { env } from "./env";
 
 export default auth(async (req) => {
@@ -9,9 +9,14 @@ export default auth(async (req) => {
   const path = req.nextUrl.pathname;
   const url = req.nextUrl.clone();
 
+  // Allow access to images in the public folder
+  if (path.startsWith("/static/")) {
+    return NextResponse.next();
+  }
+
   // Fetch the token (which includes the user's role)
   const token = await getToken({ req, secret: env.AUTH_SECRET });
-  
+
   if (!token) {
     // Redirect to signin if not logged in and not on signin page
     if (!isLoggedIn && path !== "/auth/signin") {
@@ -20,7 +25,7 @@ export default auth(async (req) => {
     return NextResponse.next();
   }
 
-  const role = token.role;  // Assuming role is stored in token (e.g. SUPER_ADMIN, ADMIN, USER)
+  const role = token.role; // Assuming role is stored in token (e.g. SUPER_ADMIN, ADMIN, USER)
 
   // Redirect if admin to /admin* routes
   if (isLoggedIn && (role === Role.SUPER_ADMIN || role === Role.ADMIN)) {
@@ -47,5 +52,5 @@ export default auth(async (req) => {
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|static).*)"],
 };

@@ -40,26 +40,7 @@ export async function signInAction(prevState: State, formData: FormData) {
         errors: err.message,
       };
     }
-    // Handle ZodError or other structured errors
-    if (err && typeof err === "object" && "errors" in err) {
-      const errors = err.errors as { message: string }[];
-      const passwordErrors = errors.filter((e) =>
-        e.message.toLowerCase().includes("password"),
-      );
-      const otherErrors = errors.filter(
-        (e) => !e.message.toLowerCase().includes("password"),
-      );
 
-      let errorMessage = otherErrors.map((e) => e.message).join(", ");
-      if (passwordErrors.length > 0) {
-        errorMessage += (errorMessage ? " " : "") + "Password is incorrect.";
-      }
-
-      return {
-        success: false,
-        errors: errorMessage,
-      };
-    }
     // Fallback for unexpected error types
     return {
       success: false,
