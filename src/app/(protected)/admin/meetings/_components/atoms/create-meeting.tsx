@@ -1,6 +1,5 @@
 "use client";
 
-import { SubmitButton } from "@/app/_components/submit-button";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -15,23 +14,66 @@ import { Button } from "@/components/ui/button";
 import { DateTimePicker } from "@/components/ui/datetime-picket";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MultiSelect, type Option } from "@/components/ui/multi-select";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { api } from "@/trpc/react";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 
-const groupOptions: Option[] = Array.from({ length: 20 }, (_, index) => ({
-  label: `Group ${index + 1}`,
-  value: `cuid${index + 1}`,
-}));
 export const CreateMeeting = () => {
+  const router = useRouter();
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const [groups, setGroups] = useState<string[]>([]);
-
-  // new Date(datetime).toISOString() this will give utc time
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [datetime, setDateTime] = useState<Date | undefined>(undefined);
+  const [title, setTitle] = useState<string>("");
+
+  const { data: groups, isPending } = api.group.getAll.useQuery(
+    {
+      page: 1,
+      perPage: 100,
+    },
+    {
+      enabled: isDialogOpen,
+    },
+  );
+  const { mutate: createEvent, isPending: isCreating } =
+    api.event.create.useMutation({
+      onSuccess: () => {
+        toast.success("Meeting created successfully");
+        cancelRef.current?.click();
+        setIsDialogOpen(false);
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!datetime) {
+      toast.error("Please select a date and time");
+      return;
+    }
+    createEvent({
+      title,
+      groups: selectedGroups,
+      dateTime: datetime,
+    });
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    if (open) {
+      void router.refresh();
+    } else {
+      cancelRef.current?.click();
+    }
+    setIsDialogOpen(open);
+  };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
       <AlertDialogTrigger className="ml-auto" asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
@@ -39,7 +81,7 @@ export const CreateMeeting = () => {
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-[400px]">
-        <form>
+        <form onSubmit={handleSubmit}>
           <AlertDialogHeader>
             <AlertDialogTitle>Create new meeting</AlertDialogTitle>
             <AlertDialogDescription>
@@ -55,17 +97,27 @@ export const CreateMeeting = () => {
                   name="title"
                   type="text"
                   placeholder="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   required
+                  disabled={isPending || isCreating}
+                  minLength={1}
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="groups">Groups</Label>
                 <MultiSelect
-                  options={groupOptions}
-                  onValueChange={setGroups}
-                  defaultValue={groups}
+                  options={
+                    groups?.groups.map((group) => ({
+                      label: group.name,
+                      value: group.id,
+                    })) ?? []
+                  }
+                  onValueChange={setSelectedGroups}
+                  defaultValue={selectedGroups}
                   placeholder="Select options"
                   variant="inverted"
+                  disabled={isPending || isCreating}
                   modalPopover={true}
                 />
               </div>
@@ -75,21 +127,15 @@ export const CreateMeeting = () => {
                   hourCycle={12}
                   value={datetime}
                   onChange={setDateTime}
+                  disabled={isPending || isCreating}
                   modalPopover={true}
                 />
               </div>
             </div>
-            {/* errors can be destructured from useForm  */}
-            {/* <p
-              role="status"
-              className={cn(!!state?.errors && "text-sm text-red-500")}
-            >
-              {!state?.success && state?.errors.split(".")[0]}
-            </p> */}
           </div>
           <AlertDialogFooter className="mt-6 flex !justify-between">
             <AlertDialogCancel ref={cancelRef}>Cancel</AlertDialogCancel>
-            <SubmitButton txt="Save" className="w-auto" />
+            <Button disabled={isPending || isCreating}>Save</Button>
           </AlertDialogFooter>
         </form>
       </AlertDialogContent>

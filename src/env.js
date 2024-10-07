@@ -24,6 +24,11 @@ export const env = createEnv({
     ),
     SUPER_ADMIN_DEFAULT_PASSWORD: z.string(),
     SUPER_ADMIN_EMAIL: z.string(),
+
+    G_CLIENT_ID: z.string(),
+    G_CLIENT_SECRET: z.string(),
+    G_REDIRECT_URI: z.string(),
+    G_REFRESH_TOKEN: z.string(),
   },
 
   /**
@@ -46,6 +51,11 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     SUPER_ADMIN_DEFAULT_PASSWORD: process.env.SUPER_ADMIN_DEFAULT_PASSWORD,
     SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL,
+
+    G_CLIENT_ID: process.env.G_CLIENT_ID,
+    G_CLIENT_SECRET: process.env.G_CLIENT_SECRET,
+    G_REDIRECT_URI: process.env.G_REDIRECT_URI,
+    G_REFRESH_TOKEN: process.env.G_REFRESH_TOKEN,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
