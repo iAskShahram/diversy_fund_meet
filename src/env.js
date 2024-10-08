@@ -29,6 +29,7 @@ export const env = createEnv({
     G_CLIENT_SECRET: z.string(),
     G_REDIRECT_URI: z.string(),
     G_REFRESH_TOKEN: z.string(),
+    G_MAIL_FROM: z.string(),
   },
 
   /**
@@ -56,6 +57,7 @@ export const env = createEnv({
     G_CLIENT_SECRET: process.env.G_CLIENT_SECRET,
     G_REDIRECT_URI: process.env.G_REDIRECT_URI,
     G_REFRESH_TOKEN: process.env.G_REFRESH_TOKEN,
+    G_MAIL_FROM: process.env.G_MAIL_FROM,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

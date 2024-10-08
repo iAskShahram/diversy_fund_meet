@@ -9,6 +9,8 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { hashPassword } from "@/utils/auth.util";
+import { sendSignUpEmail } from "@/utils/mailer";
+import createHttpError from "http-errors";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -44,20 +46,37 @@ export const userRouter = createTRPCRouter({
   create: adminProcedure
     .input(createUserSchema)
     .mutation(async ({ ctx, input }) => {
-      const { name, email, groupIDs, affiliateLink } = input;
-      const randomString = crypto.randomUUID();
-      const { hashedPassword } = await hashPassword(randomString);
-      const user = await ctx.db.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword,
-          affiliateLink,
-          groups: {
-            connect: groupIDs?.map((id) => ({ id })) ?? [],
+      try {
+        const { name, email, groupIDs, affiliateLink } = input;
+        const randomString = crypto.randomUUID();
+        const { hashedPassword } = await hashPassword(randomString);
+
+        const user = await ctx.db.user.create({
+          data: {
+            name,
+            email,
+            password: hashedPassword,
+            affiliateLink,
+            groups: {
+              connect: groupIDs?.map((id) => ({ id })) ?? [],
+            },
           },
-        },
-      });
-      return user;
+        });
+
+        const result = await sendSignUpEmail({
+          email,
+          password: randomString,
+        });
+        if (!result.success) {
+          throw createHttpError.InternalServerError(
+            "User registered but failed to send email",
+          );
+        }
+
+        return user;
+      } catch (error) {
+        console.log(error);
+        throw createHttpError.InternalServerError("Failed to create user");
+      }
     }),
 });

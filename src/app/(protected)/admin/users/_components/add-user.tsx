@@ -81,9 +81,9 @@ export const AddUser = () => {
       <AlertDialogContent className="w-[400px]">
         <form onSubmit={handleSubmit}>
           <AlertDialogHeader>
-            <AlertDialogTitle>Create new Group</AlertDialogTitle>
+            <AlertDialogTitle>Add User</AlertDialogTitle>
             <AlertDialogDescription>
-              Create new group in one click
+              Add new user in one click
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="mt-6">

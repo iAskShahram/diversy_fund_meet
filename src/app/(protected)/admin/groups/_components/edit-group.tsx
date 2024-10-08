@@ -86,9 +86,9 @@ export const EditGroup = ({ groupId }: { groupId: string }) => {
       <AlertDialogContent className="w-[400px]">
         <form onSubmit={handleSubmit}>
           <AlertDialogHeader>
-            <AlertDialogTitle>Create new Group</AlertDialogTitle>
+            <AlertDialogTitle>Edit Group</AlertDialogTitle>
             <AlertDialogDescription>
-              Create new group in one click
+              Edit group in one click
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="mt-6">
