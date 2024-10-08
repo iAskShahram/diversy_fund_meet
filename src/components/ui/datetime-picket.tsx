@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import { Button, buttonVariants } from "@/components/ui/button";
-import type { CalendarProps } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -27,6 +26,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DayPicker } from "react-day-picker";
+
+export type CalendarProps = React.ComponentProps<typeof DayPicker>
 
 // ---------- utils start ----------
 /**
@@ -267,6 +268,7 @@ function Calendar({
       };
     }
     return genMonths(locale);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const YEARS = React.useMemo(() => genYears(yearRange), []);

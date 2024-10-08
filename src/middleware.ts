@@ -3,11 +3,20 @@ import { Role } from "@prisma/client";
 import { getToken } from "next-auth/jwt";
 import { NextResponse } from "next/server";
 import { env } from "./env";
+import { signOut } from "next-auth/react";
 
 export default auth(async (req) => {
   const isLoggedIn = !!req.auth?.user;
   const path = req.nextUrl.pathname;
   const url = req.nextUrl.clone();
+
+  const currentHost = req.headers.get("host");
+  const trustedHost = new URL(env.NEXTAUTH_URL).host;
+  if (currentHost !== trustedHost) {
+    console.error(`Untrusted host: ${currentHost}`);
+    await signOut();
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
+  }
 
   // Allow access to images in the public folder
   if (path.startsWith("/static/")) {

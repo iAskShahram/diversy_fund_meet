@@ -47,6 +47,7 @@ declare module "@auth/core/jwt" {
 const invalidCredentialsError = "Invalid email or password";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   session: {
     strategy: "jwt",
     maxAge: 60 * 60 * 24 * 7, // 7 days

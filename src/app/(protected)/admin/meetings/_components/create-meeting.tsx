@@ -20,9 +20,9 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { enUS } from "date-fns/locale";
 
 export const CreateMeeting = () => {
-  const router = useRouter();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
@@ -132,6 +132,11 @@ export const CreateMeeting = () => {
                   onChange={setDateTime}
                   disabled={isPending || isCreating}
                   modalPopover={true}
+
+                  locale={enUS}
+                  weekStartsOn={0}
+                  showWeekNumber={false}
+                  showOutsideDays={true}
                 />
               </div>
             </div>
