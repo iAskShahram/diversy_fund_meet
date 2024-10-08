@@ -19,7 +19,7 @@ const Page = () => {
   const status = Object.values(EventStatus).includes(
     searchParams.get("status") as EventStatus,
   )
-    ? searchParams.get("status")
+    ? searchParams.get("status")!
     : EventStatus.UPCOMING;
 
   const { data: events } = api.event.getAll.useQuery({
@@ -69,17 +69,7 @@ const Page = () => {
             <CreateMeeting />
           </div>
           <TabsContent
-            value={EventStatus.UPCOMING}
-            className="border-none p-0 outline-none"
-          >
-            <DataTable
-              columns={columns}
-              data={events?.events ?? []}
-              totalCount={events?.totalCount ?? 0}
-            />
-          </TabsContent>
-          <TabsContent
-            value={EventStatus.PAST}
+            value={status}
             className="border-none p-0 outline-none"
           >
             <DataTable
