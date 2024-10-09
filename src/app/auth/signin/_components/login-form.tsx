@@ -19,10 +19,10 @@ export function LoginForm() {
   const router = useRouter();
 
   useEffect(() => {
-    if (state.success) {
-      router.push("/");
+    if (state?.success) {
+      router.push("/", { scroll: false });
     }
-  }, [state.success, router]);
+  }, [state, router]);
 
   return (
     <form action={formAction}>

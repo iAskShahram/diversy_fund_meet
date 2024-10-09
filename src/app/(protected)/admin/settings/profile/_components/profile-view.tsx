@@ -83,20 +83,32 @@ export const ProfileView = () => {
       return;
     }
 
-    const response = await fetch(presignedUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": file.type,
+    toast.promise(
+      (async () => {
+        const response = await fetch(presignedUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Type": file.type,
+          },
+          body: file,
+        });
+        if (!response.ok) {
+          throw new Error("Failed to upload image");
+        }
+        console.dir({ response }, { depth: null });
+        // updateUser({ avatar: key });
+        
+        // await session.update({
+          
+        // });
+        return response;
+      })(),
+      {
+        loading: "Uploading image...",
+        success: "Image uploaded successfully",
+        error: "Failed to upload image",
       },
-      body: file,
-    });
-    if (response.ok) {
-      // console.dir({ response }, { depth: null });
-      // updateUser({ avatar: key });
-      toast.success("Image uploaded");
-    } else {
-      toast.error("Failed to upload image");
-    }
+    );
   };
 
   return (
