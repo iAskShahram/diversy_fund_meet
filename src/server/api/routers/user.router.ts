@@ -16,10 +16,15 @@ export const userRouter = createTRPCRouter({
   update: protectedProcedure
     .input(updateUserSchema)
     .mutation(async ({ ctx, input }) => {
-      const { name } = input;
+      const { name, avatar } = input;
+
+      const dataObject: { name?: string; image?: string } = {};
+      if (name) dataObject.name = name;
+      if (avatar) dataObject.image = avatar;
+
       const user = await ctx.db.user.update({
         where: { id: ctx.session.user.id },
-        data: { name },
+        data: dataObject,
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = user;

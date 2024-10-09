@@ -15,6 +15,19 @@ import { toast } from "sonner";
 export const ProfileView = () => {
   const router = useRouter();
   const session = useSession();
+  const [file, setFile] = useState<File | null>(null);
+  const [form, setForm] = useState({
+    name: "",
+  });
+
+  useEffect(() => {
+    if (session.data) {
+      setForm({
+        name: session.data.user.name ?? "",
+      });
+    }
+  }, [session.data]);
+
   const { mutate: updateUser, isPending } = api.user.update.useMutation({
     onSuccess: async () => {
       toast.success("Profile updated");
@@ -27,8 +40,17 @@ export const ProfileView = () => {
       toast.error(error.message);
     },
   });
-  const [form, setForm] = useState({
-    name: "",
+
+  const {
+    mutate: getAvatarPresignedUrl,
+    isPending: isPendingGetAvatarPresignedUrl,
+  } = api.aws.getAvatarPresignedUrl.useMutation({
+    onSuccess: async ({ key, presignedUrl }) => {
+      await uploadImage(key, presignedUrl);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
   });
 
   const handleSubmit = async () => {
@@ -43,14 +65,39 @@ export const ProfileView = () => {
     updateUser(formData.data);
   };
 
-  useEffect(() => {
-    if (session.data) {
-      console.log({ session: session.data });
-      setForm({
-        name: session.data.user.name ?? "",
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(file);
+      getAvatarPresignedUrl({
+        fileType: file.type,
+        fileName: file.name,
+        fileSize: file.size,
       });
     }
-  }, [session.data]);
+  };
+
+  const uploadImage = async (key: string, presignedUrl: string) => {
+    if (!file) {
+      toast.error("No file selected");
+      return;
+    }
+
+    const response = await fetch(presignedUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type,
+      },
+      body: file,
+    });
+    if (response.ok) {
+      // console.dir({ response }, { depth: null });
+      // updateUser({ avatar: key });
+      toast.success("Image uploaded");
+    } else {
+      toast.error("Failed to upload image");
+    }
+  };
 
   return (
     <div className="flex w-full flex-col gap-8">
@@ -60,7 +107,18 @@ export const ProfileView = () => {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div className="flex items-center justify-center">
-          <Button variant="outline">
+          <Input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            id="imageUpload"
+            onChange={onFileChange}
+            multiple={false}
+          />
+          <Button
+            variant="outline"
+            onClick={() => document.getElementById("imageUpload")?.click()}
+          >
             <FilePen className="mr-2 h-4 w-4" />
             Upload Image
           </Button>
