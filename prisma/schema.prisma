@@ -11,13 +11,13 @@ datasource db {
 }
 
 model User {
-    id             String  @id @default(cuid())
-    name           String
-    email          String  @unique
-    password       String
-    image          String?
-    role           Role    @default(USER)
-    affiliateLink String  @default("")
+    id            String @id @default(cuid())
+    name          String
+    email         String @unique
+    password      String
+    image         String @default("")
+    role          Role   @default(USER)
+    affiliateLink String @default("")
 
     groups Group[] @relation("GroupUsers")
 
@@ -31,7 +31,7 @@ model User {
 model Event {
     id             String   @id @default(cuid())
     title          String
-    description    String?
+    description    String   @default("")
     dateTime       DateTime
     googleMeetLink String
 
@@ -45,8 +45,8 @@ model Group {
     id   String @id @default(cuid())
     name String
 
-    users User[]  @relation("GroupUsers")
-    events  Event[] @relation("EventGroups")
+    users  User[]  @relation("GroupUsers")
+    events Event[] @relation("EventGroups")
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
