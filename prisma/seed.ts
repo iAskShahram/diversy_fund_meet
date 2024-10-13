@@ -6,22 +6,27 @@ const prisma = new PrismaClient();
 async function main() {
   await prisma.user.upsert({
     where: { email: env.SUPER_ADMIN_EMAIL },
-    update: {},
+    update: {
+      password: (await hashPassword(env.SUPER_ADMIN_DEFAULT_PASSWORD))
+        .hashedPassword,
+    },
     create: {
       email: env.SUPER_ADMIN_EMAIL,
       name: "Diversy Fund",
       password: (await hashPassword(env.SUPER_ADMIN_DEFAULT_PASSWORD))
         .hashedPassword,
-        affiliateLink: "https://diversyfund.com/signup?affiliate=123456",
+      affiliateLink: "https://diversyfund.com/signup?affiliate=123456",
       role: Role.SUPER_ADMIN,
     },
   });
 
   await prisma.user.upsert({
     where: { email: "user@diversyfund.com" },
-    update: {},
+    update: {
+      password: (await hashPassword("asdasd")).hashedPassword,
+    },
     create: {
-      email: "user@diversyfund.com",
+      email: "user@example.com",
       name: "Diversy Fund User",
       password: (await hashPassword("123123")).hashedPassword,
       role: Role.USER,

@@ -4,7 +4,12 @@ import {
   getGroupUsersSchema,
   updateGroupSchema,
 } from "@/lib/validators/group.validator";
-import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/server/api/trpc";
+import { isAdmin } from "@/utils/auth.util";
 
 export const groupRouter = createTRPCRouter({
   create: adminProcedure
@@ -22,27 +27,37 @@ export const groupRouter = createTRPCRouter({
       return group;
     }),
 
-  getAll: adminProcedure
+  getAll: protectedProcedure
     .input(paginationQuerySchema)
     .query(async ({ ctx, input }) => {
       const { perPage, page } = input;
-      const totalCount = ctx.db.group.count();
+      const where = !isAdmin(ctx.session)
+        ? {
+            users: {
+              some: {
+                id: ctx.session.user.id,
+              },
+            },
+          }
+        : {};
+
+      const totalCount = ctx.db.group.count({ where });
+
       const groups = await ctx.db.group.findMany({
         skip: (page - 1) * perPage,
         take: perPage,
         include: {
-          users: {
-            select: {
-              id: true,
-            },
+          _count: {
+            select: { users: true },
           },
         },
+        where,
       });
 
       const groupsWithCount = groups.map((group) => {
         return {
           ...group,
-          usersCount: group.users.length,
+          usersCount: group._count.users,
         };
       });
 

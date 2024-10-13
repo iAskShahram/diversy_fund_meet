@@ -8,7 +8,9 @@ export enum EventStatus {
 
 export const createEventSchema = z.object({
   title: z.string().min(1),
-  dateTime: z.date(),
+  dateTime: z.date().refine((date) => date >= new Date(), {
+    message: "Date and time must be in the future",
+  }),
   groups: z.array(z.string()).min(1),
 });
 

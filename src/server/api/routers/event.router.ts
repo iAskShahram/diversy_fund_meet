@@ -4,7 +4,12 @@ import {
   EventStatus,
   getAllEventsSchema,
 } from "@/lib/validators/event.validator";
-import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from "@/server/api/trpc";
+import { isAdmin } from "@/utils/auth.util";
 import { Role } from "@prisma/client";
 import { google } from "googleapis";
 import createHttpError from "http-errors";
@@ -76,7 +81,7 @@ export const eventRouter = createTRPCRouter({
       return event;
     }),
 
-  getAll: adminProcedure
+  getAll: protectedProcedure
     .input(getAllEventsSchema)
     .query(async ({ ctx, input }) => {
       const { perPage, page, status } = input;
@@ -86,27 +91,66 @@ export const eventRouter = createTRPCRouter({
           gte?: Date;
           lte?: Date;
         };
+        groups?: {
+          some: {
+            users: {
+              some: {
+                id: string;
+              };
+            };
+          };
+        };
       } = {};
+      if (!isAdmin(ctx.session)) {
+        queryObj.groups = {
+          some: {
+            users: {
+              some: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+        };
+      }
+
       if (status === EventStatus.UPCOMING) {
         queryObj.dateTime = {
           gte: new Date(),
         };
-      }
-      if (status === EventStatus.PAST) {
+      } else if (status === EventStatus.PAST) {
         queryObj.dateTime = {
           lte: new Date(),
         };
       }
+
       const events = await ctx.db.event.findMany({
         where: queryObj,
+        select: {
+          id: true,
+          title: true,
+          googleMeetLink: true,
+          dateTime: true,
+          description: true,
+          createdAt: true,
+          groups: {
+            select: {
+              name: true,
+            },
+          },
+        },
         skip: (page - 1) * perPage,
         take: perPage,
       });
 
+      const _events = events.map((event) => ({
+        ...event,
+        groups: event.groups.map((group) => group.name).join(", "),
+      }));
+
       const totalCount = await ctx.db.event.count({
         where: queryObj,
       });
-      return { events, totalCount };
+      return { events: _events, totalCount };
     }),
 });
 

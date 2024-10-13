@@ -3,33 +3,38 @@
 import Link from "next/link";
 
 import { cn } from "@/lib/utils";
+import { Role } from "@prisma/client";
+import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 const links = [
   {
     label: "Home",
-    href: "/admin",
+    href: "/",
     isHome: true,
   },
   {
     label: "Meetings",
-    href: "/admin/meetings",
+    href: "/meetings",
   },
   {
     label: "Users",
-    href: "/admin/users",
+    href: "/users",
   },
   {
     label: "Groups",
-    href: "/admin/groups",
+    href: "/groups",
   },
 ];
 
-export function AdminNav({
+export function Nav({
   className,
   ...props
 }: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname();
+  const session = useSession();
+  const isAdmin = session.data?.user.role !== Role.USER;
+
   return (
     <nav
       className={cn("flex items-center space-x-4 lg:space-x-6", className)}
@@ -38,14 +43,14 @@ export function AdminNav({
       {links.map((link) => (
         <Link
           key={link.label}
-          href={link.href}
+          href={`${isAdmin ? "/admin" : ""}${link.href}`}
           className={cn(
             "text-sm font-medium transition-colors hover:text-primary",
             link.isHome
-              ? pathname === link.href
+              ? pathname === (isAdmin ? "/admin" : "/")
                 ? ""
                 : "text-muted-foreground"
-              : pathname.startsWith(link.href)
+              : pathname.startsWith(isAdmin ? `/admin${link.href}` : link.href)
                 ? ""
                 : "text-muted-foreground",
           )}

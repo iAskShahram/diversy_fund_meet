@@ -16,11 +16,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { api } from "@/trpc/react";
+import { getErrorMessage } from "@/utils/helpers/get-error-message";
+import { enUS } from "date-fns/locale";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { enUS } from "date-fns/locale";
 
 export const CreateMeeting = () => {
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -48,7 +48,7 @@ export const CreateMeeting = () => {
         setIsDialogOpen(false);
       },
       onError: (error) => {
-        toast.error(error.message);
+        toast.error(getErrorMessage(error));
       },
     });
 
@@ -132,7 +132,6 @@ export const CreateMeeting = () => {
                   onChange={setDateTime}
                   disabled={isPending || isCreating}
                   modalPopover={true}
-
                   locale={enUS}
                   weekStartsOn={0}
                   showWeekNumber={false}

@@ -2,7 +2,9 @@
 
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
+import { Role } from "@prisma/client";
 import { Trash2 } from "lucide-react";
+import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -10,6 +12,7 @@ export const AnnouncementCard = ({
   Icon,
   title,
   announcement,
+  session,
 }: {
   Icon: React.ReactElement;
   title: string;
@@ -21,6 +24,7 @@ export const AnnouncementCard = ({
     url: string;
     createdById: string;
   };
+  session: Session | null;
 }) => {
   const router = useRouter();
   const { mutate: deleteAnnouncement, isPending } =
@@ -47,16 +51,18 @@ export const AnnouncementCard = ({
           <p className="text-sm">{announcement.title}</p>
         </div>
       </a>
-      <div className="flex items-center">
-        <Button
-          variant={"outline"}
-          className="border border-destructive"
-          disabled={isPending}
-          onClick={() => deleteAnnouncement({ id: announcement.id })}
-        >
-          <Trash2 className="h-4 w-4 text-destructive" />
-        </Button>
-      </div>
+      {session?.user.role !== Role.USER && (
+        <div className="flex items-center">
+          <Button
+            variant={"outline"}
+            className="border border-destructive"
+            disabled={isPending}
+            onClick={() => deleteAnnouncement({ id: announcement.id })}
+          >
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

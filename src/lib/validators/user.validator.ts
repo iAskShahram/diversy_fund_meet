@@ -5,7 +5,7 @@ export const updateUserSchema = z
     name: z.string().nullish(),
     avatar: z.string().nullish(),
   })
-  .refine((data) => !data.name && !data.avatar, {
+  .refine((data) => data.name !== null || data.avatar !== null, {
     message: "At least one of 'name' or 'avatar' must be provided",
   });
 
@@ -14,4 +14,8 @@ export const createUserSchema = z.object({
   email: z.string().email(),
   affiliateLink: z.string(),
   groupIDs: z.array(z.string()).optional(),
+});
+
+export const deleteUserSchema = z.object({
+  id: z.string(),
 });

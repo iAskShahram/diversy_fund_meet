@@ -97,9 +97,9 @@ export const ProfileView = () => {
         }
         console.dir({ response }, { depth: null });
         // updateUser({ avatar: key });
-        
+
         // await session.update({
-          
+
         // });
         return response;
       })(),
@@ -120,6 +120,7 @@ export const ProfileView = () => {
         </Avatar>
         <div className="flex items-center justify-center">
           <Input
+            disabled={isPendingGetAvatarPresignedUrl}
             type="file"
             accept="image/*"
             className="hidden"

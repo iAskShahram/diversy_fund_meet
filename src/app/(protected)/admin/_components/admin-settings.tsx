@@ -27,14 +27,15 @@ const groups: Group[] = [
 export const AdminSettings = async ({ className }: { className?: string }) => {
   const session = await auth();
   return (
-    <div >
+    <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <div className="flex w-full cursor-pointer items-center justify-between gap-6 rounded-lg border p-2 text-sm shadow-sm hover:bg-gray-100">
             <div className="flex items-center space-x-1">
               <Avatar className="flex h-6 w-6 items-center justify-center">
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+                  src={session?.user.image || "https://github.com/shadcn.png"}
                   className="h-full w-full"
                 />
                 <div className="h-4 w-4">

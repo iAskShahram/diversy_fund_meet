@@ -4,11 +4,15 @@ import { api } from "@/trpc/server";
 import { Megaphone, Newspaper } from "lucide-react";
 import { CreatePostButton } from "./atoms/create-post-button";
 import { AnnouncementCard } from "./announcement-card";
+import type { Session } from "next-auth";
+import { Role } from "@prisma/client";
 
 export const Announcements = async ({
   className,
+  session,
 }: {
   className?: string;
+  session: Session | null;
 }) => {
   const announcements = await api.announcement.getAll();
   return (
@@ -16,7 +20,7 @@ export const Announcements = async ({
       <CardHeader>
         <div className="flex justify-between">
           <CardTitle>News & Announcements</CardTitle>
-          <CreatePostButton />
+          {session?.user.role !== Role.USER && <CreatePostButton />}
         </div>
       </CardHeader>
       <CardContent className="space-y-1">
@@ -32,6 +36,7 @@ export const Announcements = async ({
             }
             title={index % 2 === 0 ? "News" : "Announcement"}
             announcement={announcement}
+            session={session}
           />
         ))}
       </CardContent>

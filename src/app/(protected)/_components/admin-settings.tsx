@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/server/auth";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 
 type Group = {
   items: { label: string; icon: React.ElementType; href: string }[];

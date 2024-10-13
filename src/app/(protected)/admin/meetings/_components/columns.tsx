@@ -22,6 +22,7 @@ export const MeetingSchema = z.object({
   title: z.string(),
   googleMeetLink: z.string(),
   dateTime: z.date(),
+  groups: z.string(),
 });
 
 export type Meeting = z.infer<typeof MeetingSchema>;
@@ -42,6 +43,16 @@ export const columns: ColumnDef<Meeting>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Meeting Name" />
     ),
+  },
+  {
+    accessorKey: "groups",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Groups" />
+    ),
+    cell: ({ row }) => {
+      const groups = row.getValue("groups");
+      return <div className="max-w-[500px] truncate">{groups as string}</div>;
+    },
   },
   {
     accessorKey: "googleMeetLink",

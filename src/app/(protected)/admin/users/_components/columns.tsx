@@ -1,8 +1,10 @@
 "use client";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { GoogleMeet } from "@/components/ui/icons/google-meet.icon";
+import { api } from "@/trpc/react";
 import type { ColumnDef } from "@tanstack/react-table";
+import { Files, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DataTableColumnHeader } from "../../meetings/_components/dataTable/data-table-column-header";
@@ -13,6 +15,8 @@ export const usersSchema = z.object({
   name: z.string(),
   email: z.string(),
   affiliateLink: z.string(),
+  image: z.string(),
+  groups: z.string(),
 });
 
 export type Meeting = z.infer<typeof usersSchema>;
@@ -26,7 +30,21 @@ export const columns: ColumnDef<Meeting>[] = [
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <div className="flex flex-row items-center gap-2 px-4">{user.name}</div>
+        <div className="flex">
+          <div>
+            <Avatar>
+              <AvatarImage
+                src={user.image || "https://github.com/shadcn.png"}
+              />
+              <div className="h-4 w-4">
+                <AvatarFallback className="h-full w-full">CN</AvatarFallback>
+              </div>
+            </Avatar>
+          </div>
+          <div className="flex flex-row items-center gap-2 px-4">
+            {user.name}
+          </div>
+        </div>
       );
     },
   },
@@ -40,6 +58,20 @@ export const columns: ColumnDef<Meeting>[] = [
       return (
         <div className="flex flex-row items-center gap-2 px-4">
           {user.email}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "groups",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Groups" />
+    ),
+    cell: ({ row }) => {
+      const user = row.original;
+      return (
+        <div className="max-w-[500px] truncate" title={user.groups}>
+          {user.groups}
         </div>
       );
     },
@@ -61,8 +93,45 @@ export const columns: ColumnDef<Meeting>[] = [
               toast.success("Link copied to clipboard");
             }}
           >
-            <GoogleMeet className="mr-2 h-7 w-7" />
             Copy Link
+            <Files className="ml-2 h-4 w-4 text-primary" />
+          </Button>
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    header: () => <div>Actions</div>,
+    cell: ({ row }) => {
+      const user = row.original;
+      const utils = api.useUtils();
+      const { mutate: deleteUser } = api.user.delete.useMutation({
+        onSuccess: () => {
+          toast.success("User deleted");
+          utils.user.getAll.invalidate();
+        },
+        onError: () => {
+          toast.error("Failed to delete user");
+        },
+      });
+
+      return (
+        <div className="flex items-center gap-2">
+          <Button
+            className="border border-destructive p-2"
+            variant={"outline"}
+            type="button"
+            onClick={async () => {
+              const confirmed = confirm(
+                "Are you sure you want to delete this user?",
+              );
+              if (confirmed) {
+                deleteUser({ id: user.id });
+              }
+            }}
+          >
+            <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
       );

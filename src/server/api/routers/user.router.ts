@@ -1,6 +1,7 @@
 import { paginationQuerySchema } from "@/lib/validators/common.validator";
 import {
   createUserSchema,
+  deleteUserSchema,
   updateUserSchema,
 } from "@/lib/validators/user.validator";
 import {
@@ -8,8 +9,10 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/server/api/trpc";
+import { Context } from "@/server/types";
 import { hashPassword } from "@/utils/auth.util";
 import { sendSignUpEmail } from "@/utils/mailer";
+import { Role } from "@prisma/client";
 import createHttpError from "http-errors";
 
 export const userRouter = createTRPCRouter({
@@ -31,7 +34,7 @@ export const userRouter = createTRPCRouter({
       return userWithoutPassword;
     }),
 
-  getAll: adminProcedure
+  getAll: protectedProcedure
     .input(paginationQuerySchema)
     .query(async ({ ctx, input }) => {
       const { page, perPage } = input;
@@ -44,8 +47,26 @@ export const userRouter = createTRPCRouter({
       }
 
       const totalCount = ctx.db.user.count();
-      const users = await ctx.db.user.findMany(queryObj);
-      return { users, totalCount: await totalCount };
+      const users = await ctx.db.user.findMany({
+        ...queryObj,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          affiliateLink: true,
+          image: true,
+          groups: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+      const _users = users.map((user) => ({
+        ...user,
+        groups: user.groups.map((group) => group.name).join(", "),
+      }));
+      return { users: _users, totalCount: await totalCount };
     }),
 
   create: adminProcedure
@@ -84,4 +105,37 @@ export const userRouter = createTRPCRouter({
         throw createHttpError.InternalServerError("Failed to create user");
       }
     }),
+
+  delete: adminProcedure
+    .input(deleteUserSchema)
+    .mutation(async ({ ctx, input }) => {
+      authorizeDeleteUser(ctx, input.id);
+      const { id } = input;
+      const user = await ctx.db.user.delete({ where: { id } });
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    }),
 });
+
+async function authorizeDeleteUser(ctx: Context, id: string) {
+  if (ctx.session.user.id === id) {
+    throw createHttpError.Forbidden("Cannot delete yourself");
+  }
+
+  const userToDelete = await ctx.db.user.findUnique({ where: { id } });
+  if (!userToDelete) {
+    throw createHttpError.NotFound("User not found");
+  }
+
+  if (ctx.session.user.role === Role.SUPER_ADMIN) {
+    return; // Super admin can delete anyone
+  }
+
+  if (userToDelete.role === Role.USER) {
+    return; // Admin can delete regular users
+  } else {
+    throw createHttpError.Forbidden(
+      "Admins cannot delete other admins or super admins",
+    );
+  }
+}
