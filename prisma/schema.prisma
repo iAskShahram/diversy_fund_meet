@@ -24,6 +24,7 @@ model User {
     createdAt     DateTime       @default(now())
     updatedAt     DateTime       @updatedAt
     announcements Announcement[]
+    rsvps         Rsvp[]
 
     @@index([email, id])
 }
@@ -36,6 +37,21 @@ model Event {
     googleMeetLink String
 
     groups Group[] @relation("EventGroups")
+    rsvps  Rsvp[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+// add RSVP model
+model Rsvp {
+    id   String     @id @default(cuid())
+    rsvp RsvpStatus @default(NO)
+
+    event   Event  @relation(fields: [eventId], references: [id])
+    eventId String
+    user    User   @relation(fields: [userId], references: [id])
+    userId  String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -68,4 +84,9 @@ enum Role {
     SUPER_ADMIN
     ADMIN
     USER
+}
+
+enum RsvpStatus {
+    YES
+    NO
 }
