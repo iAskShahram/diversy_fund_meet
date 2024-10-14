@@ -10,7 +10,7 @@ import {
   protectedProcedure,
 } from "@/server/api/trpc";
 import { isAdmin } from "@/utils/auth.util";
-import { Role } from "@prisma/client";
+import { type Prisma, Role, RsvpStatus } from "@prisma/client";
 import { google } from "googleapis";
 import createHttpError from "http-errors";
 
@@ -101,6 +101,7 @@ export const eventRouter = createTRPCRouter({
           };
         };
       } = {};
+
       if (!isAdmin(ctx.session)) {
         queryObj.groups = {
           some: {
@@ -123,21 +124,39 @@ export const eventRouter = createTRPCRouter({
         };
       }
 
-      const events = await ctx.db.event.findMany({
-        where: queryObj,
-        select: {
-          id: true,
-          title: true,
-          googleMeetLink: true,
-          dateTime: true,
-          description: true,
-          createdAt: true,
-          groups: {
-            select: {
-              name: true,
-            },
+      const selectObj: Prisma.EventSelect = {
+        id: true,
+        title: true,
+        googleMeetLink: true,
+        dateTime: true,
+        description: true,
+        createdAt: true,
+        rsvps: {
+          select: {
+            id: true,
+            rsvp: true,
+            userId: true,
           },
         },
+        groups: {
+          select: {
+            name: true,
+          },
+        },
+      };
+
+      if (!isAdmin(ctx.session)) {
+        selectObj.rsvps = {
+          ...(selectObj.rsvps as object),
+          where: {
+            userId: ctx.session.user.id,
+          },
+        };
+      }
+
+      const events = await ctx.db.event.findMany({
+        where: queryObj,
+        select: selectObj,
         skip: (page - 1) * perPage,
         take: perPage,
       });
@@ -145,6 +164,7 @@ export const eventRouter = createTRPCRouter({
       const _events = events.map((event) => ({
         ...event,
         groups: event.groups.map((group) => group.name).join(", "),
+        rsvp: event.rsvps[0]?.rsvp ?? RsvpStatus.NO,
       }));
 
       const totalCount = await ctx.db.event.count({

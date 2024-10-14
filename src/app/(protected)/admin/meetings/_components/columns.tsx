@@ -11,11 +11,20 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { GoogleMeet } from "@/components/ui/icons/google-meet.icon";
 import type { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
+import { CircleCheck, CircleX, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DataTableColumnHeader } from "./dataTable/data-table-column-header";
 import { format } from "date-fns";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RsvpStatus } from "@prisma/client";
+import { api } from "@/trpc/react";
 
 export const MeetingSchema = z.object({
   id: z.string(),
@@ -23,6 +32,14 @@ export const MeetingSchema = z.object({
   googleMeetLink: z.string(),
   dateTime: z.date(),
   groups: z.string(),
+  rsvp: z.nativeEnum(RsvpStatus),
+  rsvps: z.array(
+    z.object({
+      id: z.string(),
+      rsvp: z.nativeEnum(RsvpStatus),
+      eventId: z.string(),
+    }),
+  ),
 });
 
 export type Meeting = z.infer<typeof MeetingSchema>;
@@ -52,6 +69,65 @@ export const columns: ColumnDef<Meeting>[] = [
     cell: ({ row }) => {
       const groups = row.getValue("groups");
       return <div className="max-w-[500px] truncate">{groups as string}</div>;
+    },
+  },
+  {
+    accessorKey: "rsvp",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="RSVP" />
+    ),
+    cell: ({ row }) => {
+      const rsvp = row.getValue("rsvp") as RsvpStatus;
+      const _row = row.original;
+      const utils = api.useUtils();
+      const { mutate: updateRsvp, isPending } = api.rsvp.update.useMutation({
+        onSuccess: () => {
+          utils.event.getAll.invalidate();
+          toast.success(`RSVP updated!`);
+        },
+        onError: (error) => {
+          toast.error(`Error updating RSVP: ${error.message}`);
+        },
+      });
+
+      const handleRSVPChange = async (value: string) => {
+        updateRsvp({
+          id: _row.rsvps[0]?.id ?? null,
+          rsvp: value as RsvpStatus,
+          eventId: _row.id,
+        });
+      };
+
+      return (
+        <Select
+          defaultValue={rsvp}
+          onValueChange={handleRSVPChange}
+          disabled={isPending}
+        >
+          <SelectTrigger className="w-[100px]">
+            <SelectValue>
+              <div className="flex items-center gap-2">
+                {rsvp === RsvpStatus.YES ? (
+                  <CircleCheck className="h-4 w-4 text-primary" />
+                ) : (
+                  <CircleX className="h-4 w-4" />
+                )}{" "}
+                <div
+                  className={`text-sm ${
+                    rsvp === RsvpStatus.YES ? "text-primary" : ""
+                  }`}
+                >
+                  {rsvp}
+                </div>
+              </div>
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={RsvpStatus.YES}>{RsvpStatus.YES}</SelectItem>
+            <SelectItem value={RsvpStatus.NO}>{RsvpStatus.NO}</SelectItem>
+          </SelectContent>
+        </Select>
+      );
     },
   },
   {

@@ -118,6 +118,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
          */
         token.name = session.name;
       }
+      if (trigger === "update" && session?.image) {
+        token.image = session.image;
+      }
       if (user?.id) {
         token.id = user.id;
         token.role = user.role;

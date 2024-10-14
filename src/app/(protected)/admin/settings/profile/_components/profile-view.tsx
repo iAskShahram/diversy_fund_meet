@@ -21,12 +21,12 @@ export const ProfileView = () => {
   });
 
   useEffect(() => {
-    if (session.data) {
+    if (session.data?.user) {
       setForm({
-        name: session.data.user.name ?? "",
+        name: session.data.user.name!,
       });
     }
-  }, [session.data]);
+  }, [session.data?.user.name]);
 
   const { mutate: updateUser, isPending } = api.user.update.useMutation({
     onSuccess: async () => {
@@ -95,12 +95,13 @@ export const ProfileView = () => {
         if (!response.ok) {
           throw new Error("Failed to upload image");
         }
-        console.dir({ response }, { depth: null });
-        // updateUser({ avatar: key });
+        const imgUrl = `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${key}`;
+        await updateUser({ avatar: imgUrl });
 
-        // await session.update({
-
-        // });
+        await session.update({
+          image: imgUrl,
+        });
+        router.refresh();
         return response;
       })(),
       {
@@ -115,7 +116,9 @@ export const ProfileView = () => {
     <div className="flex w-full flex-col gap-8">
       <div className="flex justify-between">
         <Avatar className="h-24 w-24">
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage
+            src={session.data?.user.image || "https://github.com/shadcn.png"}
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div className="flex items-center justify-center">

@@ -30,7 +30,7 @@ export const awsRouter = createTRPCRouter({
         Bucket: awsConfig.bucketName,
         Key: key,
         ContentType: fileType,
-        ContentLength: fileSize * 1024 * 1024,
+        ContentLength: fileSize,
       });
 
       const url = await getSignedUrl(s3Client, command, {
