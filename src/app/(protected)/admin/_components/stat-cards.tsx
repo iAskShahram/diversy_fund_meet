@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/trpc/server";
 import {
   CalendarDays,
   type LucideProps,
@@ -6,18 +7,20 @@ import {
   UsersRound,
 } from "lucide-react";
 
-export const StatCards = () => {
+export const StatCards = async () => {
+  const { proposedEvents, totalUsers, upcomingEvents } =
+    await api.genral.indexMeta();
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       <StatCard
         title="Proposed Meetings"
-        value={8}
+        value={proposedEvents}
         description="proposed this month"
         RIcon={CalendarDays}
       />
       <StatCard
         title="Upcomming Meetings"
-        value={22}
+        value={upcomingEvents}
         description="this month"
         RIcon={CalendarDays}
       />
@@ -29,7 +32,7 @@ export const StatCards = () => {
       />
       <StatCard
         title="Total Users"
-        value={256}
+        value={totalUsers}
         description="registered users"
         RIcon={UsersRound}
       />
