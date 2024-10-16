@@ -26,9 +26,9 @@ async function main() {
       password: (await hashPassword("asdasd")).hashedPassword,
     },
     create: {
-      email: "user@example.com",
+      email: "user@diversyfund.com",
       name: "Diversy Fund User",
-      password: (await hashPassword("123123")).hashedPassword,
+      password: (await hashPassword("asdasd")).hashedPassword,
       role: Role.USER,
       affiliateLink: "https://diversyfund.com/signup?affiliate=123457",
     },
