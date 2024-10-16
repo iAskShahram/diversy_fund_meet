@@ -6,6 +6,7 @@ import { groupRouter } from "./routers/group.router";
 import { eventRouter } from "./routers/event.router";
 import { awsRouter } from "./routers/aws.router";
 import { rsvpRouter } from "./routers/rsvp.router";
+import { genralRouter } from "./routers/genral.router";
 
 /**
  * This is the primary router for your server.
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   event: eventRouter,
   aws: awsRouter,
   rsvp: rsvpRouter,
+  genral: genralRouter
 });
 
 // export type definition of API
