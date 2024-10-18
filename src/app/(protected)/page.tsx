@@ -19,7 +19,7 @@ const Page = async () => {
           <StatCards />
         </div>
         <div className="flex h-full gap-6">
-          <UpcomingMeetings className="w-1/2" />
+          <UpcomingMeetings className="w-1/2" session={session} />
           <Announcements className="w-1/2" session={session} />
         </div>
       </div>

@@ -7,9 +7,15 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { UpcommingMeetingsContent } from "./upcomming-meetings-content";
+import { Session } from "next-auth";
 
-export const UpcomingMeetings = ({ className }: { className?: string }) => {
-  // get the stats here and pass it to the content
+export const UpcomingMeetings = ({
+  className,
+  session,
+}: {
+  className?: string;
+  session: Session;
+}) => {
   return (
     <Card className={cn("h-fit", className)}>
       <CardHeader>
@@ -17,7 +23,7 @@ export const UpcomingMeetings = ({ className }: { className?: string }) => {
         <CardDescription>12 upcoming meetings this month</CardDescription>
       </CardHeader>
       <CardContent className="h-full">
-        <UpcommingMeetingsContent />
+        <UpcommingMeetingsContent session={session} />
       </CardContent>
     </Card>
   );

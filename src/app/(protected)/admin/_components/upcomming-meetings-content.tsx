@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Session } from "next-auth";
+import { isAdmin } from "@/utils/auth.util";
 
-export const UpcommingMeetingsContent = () => {
+export const UpcommingMeetingsContent = ({ session }: { session: Session }) => {
   return (
     <div className="flex flex-col justify-between gap-12">
       <div className="flex h-max flex-col gap-3">
@@ -15,8 +17,10 @@ export const UpcommingMeetingsContent = () => {
         ))}
       </div>
       <div>
-        <Link href="/admin/meetings">
-          <Button variant={'outline'} className="w-full">Manage all upcoming meetings</Button>
+        <Link href={isAdmin(session) ? "/admin/meetings" : "/meetings"}>
+          <Button variant={"outline"} className="w-full">
+            Manage all upcoming meetings
+          </Button>
         </Link>
       </div>
     </div>
