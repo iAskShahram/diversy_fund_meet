@@ -12,7 +12,7 @@ async function main() {
     },
     create: {
       email: env.SUPER_ADMIN_EMAIL,
-      name: "Diversy Fund",
+      name: "Diversy Fund Admin",
       password: (await hashPassword(env.SUPER_ADMIN_DEFAULT_PASSWORD))
         .hashedPassword,
       affiliateLink: "https://diversyfund.com/signup?affiliate=123456",
@@ -20,19 +20,6 @@ async function main() {
     },
   });
 
-  await prisma.user.upsert({
-    where: { email: "user@diversyfund.com" },
-    update: {
-      password: (await hashPassword("asdasd")).hashedPassword,
-    },
-    create: {
-      email: "user@diversyfund.com",
-      name: "Diversy Fund User",
-      password: (await hashPassword("asdasd")).hashedPassword,
-      role: Role.USER,
-      affiliateLink: "https://diversyfund.com/signup?affiliate=123457",
-    },
-  });
   console.log("Super admin created");
 }
 
