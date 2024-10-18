@@ -11,7 +11,6 @@ export const UpcommingMeetingsContent = async ({
   session: Session;
 }) => {
   const events = await api.event.getLastFour();
-  console.dir({ events }, { depth: null });
   return (
     <div className="flex flex-col justify-between gap-12">
       <div className="flex h-max flex-col gap-3">
