@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
+import { isAdmin } from "@/utils/auth.util";
 import { Role } from "@prisma/client";
 import { Trash2 } from "lucide-react";
 import type { Session } from "next-auth";
@@ -24,7 +25,7 @@ export const AnnouncementCard = ({
     url: string;
     createdById: string;
   };
-  session: Session | null;
+  session: Session;
 }) => {
   const router = useRouter();
   const { mutate: deleteAnnouncement, isPending } =
@@ -51,7 +52,7 @@ export const AnnouncementCard = ({
           <p className="text-sm">{announcement.title}</p>
         </div>
       </a>
-      {session?.user.role !== Role.USER && (
+      {isAdmin(session) && (
         <div className="flex items-center">
           <Button
             variant={"outline"}
