@@ -109,7 +109,7 @@ export const userRouter = createTRPCRouter({
   delete: adminProcedure
     .input(deleteUserSchema)
     .mutation(async ({ ctx, input }) => {
-      authorizeDeleteUser(ctx, input.id);
+      await authorizeDeleteUser(ctx, input.id);
       const { id } = input;
       const user = await ctx.db.user.delete({ where: { id } });
       const { password, ...userWithoutPassword } = user;
