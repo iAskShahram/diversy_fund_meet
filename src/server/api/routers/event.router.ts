@@ -172,6 +172,42 @@ export const eventRouter = createTRPCRouter({
       });
       return { events: _events, totalCount };
     }),
+
+  getLastFour: protectedProcedure.query(async ({ ctx }) => {
+    const events = await ctx.db.event.findMany({
+      orderBy: {
+        dateTime: "desc",
+      },
+      take: 4,
+      select: {
+        id: true,
+        title: true,
+        dateTime: true,
+        groups: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      where: {
+        dateTime: {
+          gte: new Date(),
+        },
+        ...(!isAdmin(ctx.session) && {
+          groups: {
+            some: {
+              users: {
+                some: {
+                  id: ctx.session.user.id,
+                },
+              },
+            },
+          },
+        }),
+      },
+    });
+    return events;
+  }),
 });
 
 export async function createGoogleMeet({
