@@ -2,8 +2,10 @@ import React from "react";
 import { Logo } from "./_components/Logo";
 import { Nav } from "./admin/_components/admin-nav";
 import { AdminSettings } from "./admin/_components/admin-settings";
+import { auth } from "@/server/auth";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = async ({ children }: { children: React.ReactNode }) => {
+  const session = await auth();
   return (
     <div className="flex flex-col min-h-screen">
       <div className="h-16 border-b">
@@ -11,7 +13,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <Logo />
           <Nav className="mx-16" />
           <div className="ml-auto flex items-center space-x-4">
-            <AdminSettings />
+            <AdminSettings session={session!} />
           </div>
         </div>
       </div>

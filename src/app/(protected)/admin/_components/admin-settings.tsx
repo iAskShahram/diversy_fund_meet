@@ -8,7 +8,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { auth, signOut } from "@/server/auth";
+import { signOut } from "@/server/auth";
+import { isAdmin } from "@/utils/auth.util";
+import { Session } from "@auth/core/types";
 import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
 import Link from "next/link";
 
@@ -18,14 +20,17 @@ type Group = {
 
 const groups: Group[] = [
   {
-    items: [
-      { label: "Settings", icon: Settings2, href: "/admin/settings/profile" },
-    ],
+    items: [{ label: "Settings", icon: Settings2, href: "/settings/profile" }],
   },
 ];
 
-export const AdminSettings = async ({ className }: { className?: string }) => {
-  const session = await auth();
+export const AdminSettings = async ({
+  className,
+  session,
+}: {
+  className?: string;
+  session: Session;
+}) => {
   return (
     <div>
       <DropdownMenu>
@@ -34,8 +39,11 @@ export const AdminSettings = async ({ className }: { className?: string }) => {
             <div className="flex items-center space-x-1">
               <Avatar className="flex h-6 w-6 items-center justify-center">
                 <AvatarImage
-                  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-                  src={session?.user.image || "https://github.com/shadcn.png"}
+                  src={
+                    session.user.image.length
+                      ? session.user.image
+                      : "https://github.com/shadcn.png"
+                  }
                   className="h-full w-full"
                 />
                 <div className="h-4 w-4">
@@ -51,7 +59,10 @@ export const AdminSettings = async ({ className }: { className?: string }) => {
           {groups.map((group, index) => (
             <DropdownMenuGroup key={index}>
               {group.items.map((item) => (
-                <Link href={item.href} key={item.label}>
+                <Link
+                  href={isAdmin(session) ? "/admin" + item.href : item.href}
+                  key={item.label}
+                >
                   <DropdownMenuItem className="cursor-pointer">
                     {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                     {item.label}
