@@ -1,6 +1,6 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { isAdmin } from "@/utils/auth.util";
-import type { Prisma } from "@prisma/client";
+import { RsvpStatus, type Prisma } from "@prisma/client";
 import { endOfMonth, startOfMonth } from "date-fns";
 
 export const genralRouter = createTRPCRouter({
@@ -54,11 +54,26 @@ export const genralRouter = createTRPCRouter({
     };
     const upcomingEvents = ctx.db.event.count(upcomingEventsQuery);
 
+    const rsvpPending = ctx.db.event.count({
+      where: {
+        dateTime: {
+          gte: _now,
+          lte: _endOfMonth,
+        },
+        rsvps: {
+          some: {
+            userId: ctx.session.user.id,
+            rsvp: RsvpStatus.NO,
+          },
+        },
+      },
+    });
+
     const totalUsers = ctx.db.user.count();
     return {
       proposedEvents: await proposedEvents,
       upcomingEvents: await upcomingEvents,
-      // rsvpPending,
+      rsvpPending: await rsvpPending,
       totalUsers: await totalUsers,
     };
   }),

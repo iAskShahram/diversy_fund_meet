@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 export const StatCards = async () => {
-  const { proposedEvents, totalUsers, upcomingEvents } =
+  const { proposedEvents, totalUsers, upcomingEvents, rsvpPending } =
     await api.genral.indexMeta();
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -19,14 +19,14 @@ export const StatCards = async () => {
         RIcon={CalendarDays}
       />
       <StatCard
-        title="Upcomming Meetings"
+        title="Upcoming Meetings"
         value={upcomingEvents}
         description="this month"
         RIcon={CalendarDays}
       />
       <StatCard
         title="RSVP Pending"
-        value={15}
+        value={rsvpPending}
         description="pending responses"
         RIcon={TriangleAlert}
       />
