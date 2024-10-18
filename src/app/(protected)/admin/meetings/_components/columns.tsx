@@ -77,12 +77,12 @@ export const columns: ColumnDef<Meeting>[] = [
       <DataTableColumnHeader column={column} title="RSVP" />
     ),
     cell: ({ row }) => {
-      const rsvp = row.getValue("rsvp") as RsvpStatus;
+      const rsvp = row.getValue("rsvp");
       const _row = row.original;
       const utils = api.useUtils();
       const { mutate: updateRsvp, isPending } = api.rsvp.update.useMutation({
-        onSuccess: () => {
-          utils.event.getAll.invalidate();
+        onSuccess: async () => {
+          await utils.event.getAll.invalidate();
           toast.success(`RSVP updated!`);
         },
         onError: (error) => {
@@ -100,7 +100,7 @@ export const columns: ColumnDef<Meeting>[] = [
 
       return (
         <Select
-          defaultValue={rsvp}
+          defaultValue={rsvp as RsvpStatus}
           onValueChange={handleRSVPChange}
           disabled={isPending}
         >
@@ -117,7 +117,7 @@ export const columns: ColumnDef<Meeting>[] = [
                     rsvp === RsvpStatus.YES ? "text-primary" : ""
                   }`}
                 >
-                  {rsvp}
+                  {rsvp as RsvpStatus}
                 </div>
               </div>
             </SelectValue>
