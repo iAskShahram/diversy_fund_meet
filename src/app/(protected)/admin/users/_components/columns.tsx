@@ -8,7 +8,6 @@ import { Files, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DataTableColumnHeader } from "../../meetings/_components/dataTable/data-table-column-header";
-// import { EditGroup } from "./edit-group";
 
 export const usersSchema = z.object({
   id: z.string(),

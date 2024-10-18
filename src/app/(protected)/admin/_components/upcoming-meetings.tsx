@@ -20,7 +20,7 @@ export const UpcomingMeetings = ({
     <Card className={cn("h-fit", className)}>
       <CardHeader>
         <CardTitle>Upcomming Meetings</CardTitle>
-        <CardDescription>12 upcoming meetings this month</CardDescription>
+        <CardDescription>upcoming meetings this month</CardDescription>
       </CardHeader>
       <CardContent className="h-full">
         <UpcommingMeetingsContent session={session} />
