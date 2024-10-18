@@ -12,6 +12,7 @@ declare module "next-auth" {
     user: {
       id: string;
       role: Role;
+      name: string;
       email: string;
       image: string;
       affiliateLink: string;
@@ -23,6 +24,7 @@ declare module "next-auth" {
   interface User {
     id?: string;
     role: Role;
+    name?: string | null;
     email?: string | null;
     image?: string | null;
     affiliateLink: string;
@@ -36,6 +38,7 @@ declare module "@auth/core/jwt" {
   interface JWT {
     id: string;
     role: Role;
+    name: string;
     email: string;
     image: string;
     affiliateLink: string;
@@ -124,6 +127,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user?.id) {
         token.id = user.id;
         token.role = user.role;
+        token.name = user.name ?? "";
         token.email = user.email!;
         token.image = user.image ?? "";
         token.affiliateLink = user.affiliateLink;
@@ -136,6 +140,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.id) {
         session.user.id = token.id;
         session.user.role = token.role;
+        session.user.name = token.name;
         session.user.email = token.email;
         session.user.image = token.image;
         session.user.affiliateLink = token.affiliateLink;
