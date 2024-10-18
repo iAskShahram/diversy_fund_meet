@@ -1,8 +1,10 @@
+import { auth } from "@/server/auth";
 import { Announcements } from "./_components/announcements";
 import { StatCards } from "./_components/stat-cards";
 import { UpcomingMeetings } from "./_components/upcoming-meetings";
 
-const Page = () => {
+const Page = async () => {
+  const session = await auth()
   return (
     <div className="flex h-full flex-col p-8 pt-6">
       <div className="flex h-full flex-col gap-4">
@@ -14,7 +16,7 @@ const Page = () => {
         </div>
         <div className="flex h-full gap-6">
           <UpcomingMeetings className="w-1/2" />
-          <Announcements className="w-1/2" />
+          <Announcements session={session} className="w-1/2" />
         </div>
       </div>
     </div>
