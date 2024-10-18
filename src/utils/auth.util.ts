@@ -33,7 +33,9 @@ export const verifyPassword = async (
 };
 
 
-export const isAdmin = (sessionOrUser: Session | User) => {
-  const role = "role" in sessionOrUser ? sessionOrUser.role : sessionOrUser.user.role
-  return role === Role.SUPER_ADMIN || role === Role.ADMIN
+export const isAdmin = (sessionOrUser: Session | User | undefined): boolean => {
+  if (!sessionOrUser) return false;
+  
+  const role = "role" in sessionOrUser ? sessionOrUser.role : sessionOrUser.user?.role;
+  return role === Role.SUPER_ADMIN || role === Role.ADMIN;
 }
