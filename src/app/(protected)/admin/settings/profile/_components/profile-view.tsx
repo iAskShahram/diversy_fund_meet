@@ -96,7 +96,7 @@ export const ProfileView = () => {
           throw new Error("Failed to upload image");
         }
         const imgUrl = `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${key}`;
-        await updateUser({ avatar: imgUrl });
+        updateUser({ avatar: imgUrl });
 
         await session.update({
           image: imgUrl,
@@ -117,7 +117,7 @@ export const ProfileView = () => {
       <div className="flex justify-between">
         <Avatar className="h-24 w-24">
           <AvatarImage
-            src={session.data?.user.image || "https://github.com/shadcn.png"}
+            src={session.data?.user.image.length ? session.data?.user.image : "https://github.com/shadcn.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>

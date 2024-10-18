@@ -109,7 +109,7 @@ export const columns: ColumnDef<Meeting>[] = [
       const { mutate: deleteUser } = api.user.delete.useMutation({
         onSuccess: () => {
           toast.success("User deleted");
-          utils.user.getAll.invalidate();
+          void utils.user.getAll.invalidate();
         },
         onError: () => {
           toast.error("Failed to delete user");
