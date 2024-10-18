@@ -30,7 +30,7 @@ const Page = () => {
           <div className="absolute inset-0 flex items-center">
             <div className="space-y-6 px-20 text-black">
               <h1 className="text-[4vw] font-bold leading-tight">
-                Unlock A Stronger Financial Future ok?
+                Unlock A Stronger Financial Future
               </h1>
               <p className="text-lg">
                 With DiversyFund, you get more than just an investment platform.
