@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import {
   createEventSchema,
+  deleteEventSchema,
   EventStatus,
   getAllEventsSchema,
 } from "@/lib/validators/event.validator";
@@ -208,6 +209,23 @@ export const eventRouter = createTRPCRouter({
     });
     return events;
   }),
+
+  delete: adminProcedure
+    .input(deleteEventSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      const event = await ctx.db.event.findUnique({ where: { id } });
+      if (!event) {
+        throw createHttpError.BadRequest("Invalid event");
+      }
+
+      if (event.dateTime < new Date()) {
+        throw createHttpError.BadRequest("Event already happened");
+      }
+
+      await ctx.db.event.delete({ where: { id } });
+      return { success: true };
+    }),
 });
 
 export async function createGoogleMeet({

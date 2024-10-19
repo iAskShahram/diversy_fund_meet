@@ -9,7 +9,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "@/server/api/trpc";
-import { Context } from "@/server/types";
+import type { Context } from "@/server/types";
 import { hashPassword } from "@/utils/auth.util";
 import { sendSignUpEmail } from "@/utils/mailer";
 import { Role } from "@prisma/client";

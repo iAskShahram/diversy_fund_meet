@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { isAdmin } from "@/utils/auth.util";
 import { usePathname } from "next/navigation";
-import { Session } from "@auth/core/types";
+import type { Session } from "@auth/core/types";
 
 const links = [
   {

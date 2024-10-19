@@ -5,7 +5,7 @@ import { EventStatus } from "@/lib/validators/event.validator";
 import { api } from "@/trpc/react";
 import { usePaginationParam } from "@/utils/hooks/usePaginationParam.hook";
 import { useRouter, useSearchParams } from "next/navigation";
-import { columns } from "./_components/columns";
+import { adminColumns } from "./_components/columns";
 import { CreateMeeting } from "./_components/create-meeting";
 import { DataTable } from "./_components/data-table";
 
@@ -73,7 +73,7 @@ const Page = () => {
             className="border-none p-0 outline-none"
           >
             <DataTable
-              columns={columns}
+              columns={adminColumns}
               data={events?.events ?? []}
               totalCount={events?.totalCount ?? 0}
             />

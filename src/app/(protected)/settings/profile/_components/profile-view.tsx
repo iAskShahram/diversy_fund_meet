@@ -117,11 +117,7 @@ export const ProfileView = () => {
       <div className="flex justify-between">
         <Avatar className="h-24 w-24">
           <AvatarImage
-            src={
-              session.data?.user.image.length
-                ? session.data?.user.image
-                : "https://github.com/shadcn.png"
-            }
+            src={session.data?.user.image.length ? session.data?.user.image : "https://github.com/shadcn.png"}
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
@@ -153,7 +149,7 @@ export const ProfileView = () => {
           id="name"
           name="name"
           type="text"
-          placeholder="John Doe"
+          placeholder={session.data?.user.name ?? "John Doe"}
           value={form.name}
           onChange={(e) => setForm({ name: e.target.value })}
         />

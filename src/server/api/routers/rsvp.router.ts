@@ -37,7 +37,7 @@ export const rsvpRouter = createTRPCRouter({
       // by default there is no rsvp in the model agaisnt the user and user has RSVP of NO by default.
       // if the user has RSVPed to the event, we update the rsvp status or else we create a new rsvp record.
       const _rsvp = await ctx.db.rsvp.upsert({
-        where: { id: id ?? 'undefined' },
+        where: { id: id ?? "undefined" },
         update: { rsvp },
         create: { userId: ctx.session.user.id, rsvp, eventId },
       });

@@ -1,13 +1,15 @@
 "use client";
 
+import { userColumns } from "@/app/(protected)/admin/meetings/_components/columns";
+import { CreateMeeting } from "@/app/(protected)/admin/meetings/_components/create-meeting";
+import { DataTable } from "@/app/(protected)/admin/meetings/_components/data-table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EventStatus } from "@/lib/validators/event.validator";
 import { api } from "@/trpc/react";
+import { isAdmin } from "@/utils/auth.util";
 import { usePaginationParam } from "@/utils/hooks/usePaginationParam.hook";
+import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { columns } from "@/app/(protected)/admin/meetings/_components/columns";
-import { CreateMeeting } from "@/app/(protected)/admin/meetings/_components/create-meeting";
-import { DataTable } from "@/app/(protected)/admin/meetings/_components/data-table";
 
 const Page = () => {
   const getPaginationParam = usePaginationParam();
@@ -15,7 +17,8 @@ const Page = () => {
   const page = getPaginationParam("page", 1);
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  const session = useSession();
+  const _isAdmin = isAdmin(session.data?.user);
   const status = Object.values(EventStatus).includes(
     searchParams.get("status") as EventStatus,
   )
@@ -33,7 +36,7 @@ const Page = () => {
     _searchParams.set("status", e.currentTarget.name);
     router.push(`/meetings?${_searchParams.toString()}`);
   };
-  
+
   return (
     <div className="flex h-full flex-col p-8 pt-6">
       <div className="flex h-full flex-col gap-4">
@@ -66,11 +69,11 @@ const Page = () => {
                 Past
               </TabsTrigger>
             </TabsList>
-            <CreateMeeting />
+            {_isAdmin && <CreateMeeting />}
           </div>
           <TabsContent value={status} className="border-none p-0 outline-none">
             <DataTable
-              columns={columns}
+              columns={userColumns}
               data={events?.events ?? []}
               totalCount={events?.totalCount ?? 0}
             />

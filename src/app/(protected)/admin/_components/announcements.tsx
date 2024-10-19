@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/server";
-import { Megaphone, Newspaper } from "lucide-react";
-import { CreatePostButton } from "./atoms/create-post-button";
-import { AnnouncementCard } from "./announcement-card";
-import type { Session } from "next-auth";
 import { isAdmin } from "@/utils/auth.util";
+import { Megaphone, Newspaper } from "lucide-react";
+import type { Session } from "next-auth";
+import { AnnouncementCard } from "./announcement-card";
+import { CreatePostButton } from "./atoms/create-post-button";
+import { NoContentCard } from "./no-content-card";
 
 export const Announcements = async ({
   className,
@@ -24,21 +25,33 @@ export const Announcements = async ({
         </div>
       </CardHeader>
       <CardContent className="space-y-1">
-        {announcements.map((announcement, index) => (
-          <AnnouncementCard
-            key={announcement.id}
-            Icon={
-              index % 2 === 0 ? (
-                <Newspaper className="h-7 w-7 opacity-60" />
-              ) : (
-                <Megaphone className="h-7 w-7 opacity-60" />
-              )
-            }
-            title={index % 2 === 0 ? "News" : "Announcement"}
-            announcement={announcement}
-            session={session}
-          />
-        ))}
+        {announcements.length > 0 ? (
+          announcements.map((announcement, index) => (
+            <AnnouncementCard
+              key={announcement.id}
+              Icon={
+                index % 2 === 0 ? (
+                  <Newspaper className="h-7 w-7 opacity-60" />
+                ) : (
+                  <Megaphone className="h-7 w-7 opacity-60" />
+                )
+              }
+              title={index % 2 === 0 ? "News" : "Announcement"}
+              announcement={announcement}
+              session={session}
+            />
+          ))
+        ) : (
+          <>
+            <NoContentCard
+              heading="No New Announcements or News"
+              description={[
+                "You have no recent announcements or news at the moment.",
+              ]}
+              className="h-[28.7rem]"
+            />
+          </>
+        )}
       </CardContent>
     </Card>
   );

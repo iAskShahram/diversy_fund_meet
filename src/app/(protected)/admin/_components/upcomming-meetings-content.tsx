@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/server";
 import { isAdmin } from "@/utils/auth.util";
 import { format } from "date-fns";
-import { Session } from "next-auth";
+import { CalendarDays } from "lucide-react";
+import type { Session } from "next-auth";
 import Link from "next/link";
+import { NoContentCard } from "./no-content-card";
 
 export const UpcommingMeetingsContent = async ({
   session,
@@ -14,22 +16,48 @@ export const UpcommingMeetingsContent = async ({
   return (
     <div className="flex flex-col justify-between gap-12">
       <div className="flex h-max flex-col gap-3">
-        {events.map((event, index) => (
-          <MeetingCard
-            key={event.id}
-            title={event.title}
-            date={event.dateTime}
-            description={event.groups.map((group) => group.name).join(", ")}
-          />
-        ))}
+        {events.length > 0 ? (
+          events.map((event) => (
+            <MeetingCard
+              key={event.id}
+              title={event.title}
+              date={event.dateTime}
+              description={event.groups.map((group) => group.name).join(", ")}
+            />
+          ))
+        ) : (
+          <>
+            <NoContentCard
+              heading="No Upcoming Meetings"
+              description={[
+                "You have no scheduled meetings at the moment.",
+                "Click the button to schedule one.",
+              ]}
+            >
+              <div className="mt-3">
+                <Link
+                  href={isAdmin(session) ? "/admin/meetings" : "/meetings"}
+                  className="mt-3"
+                >
+                  <Button className="gap-2 text-sm">
+                    <CalendarDays className="h-4 w-4" />
+                    Schedule New Meeting
+                  </Button>
+                </Link>
+              </div>
+            </NoContentCard>
+          </>
+        )}
       </div>
-      <div>
-        <Link href={isAdmin(session) ? "/admin/meetings" : "/meetings"}>
-          <Button variant={"outline"} className="w-full">
-            Manage all upcoming meetings
-          </Button>
-        </Link>
-      </div>
+      {events.length > 0 && (
+        <div className="h-12">
+          <Link href={isAdmin(session) ? "/admin/meetings" : "/meetings"}>
+            <Button variant={"outline"} className="w-full">
+              Manage all upcoming meetings
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

@@ -21,3 +21,7 @@ export const getAllEventsSchema = z.object({
     .default(EventStatus.UPCOMING),
   ...paginationQuerySchema.shape,
 });
+
+export const deleteEventSchema = z.object({
+  id: z.string().cuid(),
+});

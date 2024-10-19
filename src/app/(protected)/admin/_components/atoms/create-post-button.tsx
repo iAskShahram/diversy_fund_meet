@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { createAnnouncementSchema } from "@/lib/validators/announcement.validator";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -61,7 +62,10 @@ export const CreatePostButton = () => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button>Create Post +</Button>
+        <Button className="gap-2">
+          <Plus className="h-4 w-4" />
+          Create Post
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent className="w-[400px]">
         <Form {...form}>

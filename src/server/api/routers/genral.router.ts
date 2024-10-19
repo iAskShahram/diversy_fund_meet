@@ -42,6 +42,23 @@ export const genralRouter = createTRPCRouter({
     };
     const proposedEvents = ctx.db.event.count(proposedEventsQuery);
 
+    const _rsvpPending = ctx.db.event.count({
+      where: {
+        dateTime: {
+          gte: _now,
+          lte: _endOfMonth,
+        },
+        rsvps: {
+          some: {
+            rsvp: RsvpStatus.YES,
+            ...(isUser && {
+              userId: ctx.session.user.id,
+            }),
+          },
+        },
+      },
+    });
+
     const upcomingEventsQuery: Prisma.EventCountArgs = {
       ...proposedEventsQuery,
       where: {
@@ -52,28 +69,16 @@ export const genralRouter = createTRPCRouter({
         },
       },
     };
-    const upcomingEvents = ctx.db.event.count(upcomingEventsQuery);
-
-    const rsvpPending = ctx.db.event.count({
-      where: {
-        dateTime: {
-          gte: _now,
-          lte: _endOfMonth,
-        },
-        rsvps: {
-          some: {
-            userId: ctx.session.user.id,
-            rsvp: RsvpStatus.NO,
-          },
-        },
-      },
-    });
+    const _upcomingEvents = ctx.db.event.count(upcomingEventsQuery);
 
     const totalUsers = ctx.db.user.count();
+
+    const rsvpPending = await _rsvpPending;
+    const upcomingEvents = await _upcomingEvents;
     return {
       proposedEvents: await proposedEvents,
-      upcomingEvents: await upcomingEvents,
-      rsvpPending: await rsvpPending,
+      upcomingEvents,
+      rsvpPending: upcomingEvents - rsvpPending,
       totalUsers: await totalUsers,
     };
   }),

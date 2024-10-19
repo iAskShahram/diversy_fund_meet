@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 const sidebarNavItems = [
   {
     title: "Profile",
-    href: "/admin/settings/profile",
+    href: "/settings/profile",
   },
   {
     title: "Change Password",
-    href: "/admin/settings/change-password",
+    href: "/settings/change-password",
   },
 ];
 

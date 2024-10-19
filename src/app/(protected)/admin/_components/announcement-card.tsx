@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { isAdmin } from "@/utils/auth.util";
-import { Role } from "@prisma/client";
 import { Trash2 } from "lucide-react";
 import type { Session } from "next-auth";
 import { useRouter } from "next/navigation";

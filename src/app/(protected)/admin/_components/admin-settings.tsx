@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { signOut } from "@/server/auth";
 import { isAdmin } from "@/utils/auth.util";
-import { Session } from "@auth/core/types";
+import type { Session } from "@auth/core/types";
 import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
 import Link from "next/link";
 
