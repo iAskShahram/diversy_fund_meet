@@ -117,7 +117,7 @@ export const ProfileView = () => {
     <div className="flex w-full flex-col gap-8">
       <div className="flex justify-between">
         <Avatar className="h-24 w-24">
-          <AvatarImage src={session.data?.user.image || ""} />
+          <AvatarImage src={session.data?.user.image ?? ""} />
           <AvatarFallback className="h-full w-full">
             <Image
               src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"

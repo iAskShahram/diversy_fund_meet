@@ -40,7 +40,7 @@ export const AdminSettings = async ({
             <div className="flex items-center space-x-1">
               <Avatar className="flex h-6 w-6 items-center justify-center">
                 <AvatarImage
-                  src={session.user.image || ""}
+                  src={session.user.image ?? ""}
                   alt={`${session.user.name}'s avatar`}
                   width={24}
                   height={24}

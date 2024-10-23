@@ -33,7 +33,7 @@ export const columns: ColumnDef<Meeting>[] = [
         <div className="flex">
           <div>
             <Avatar>
-              <AvatarImage src={user.image || ""} />
+              <AvatarImage src={user.image ?? ""} />
               <AvatarFallback className="h-full w-full">
                 <Image
                   src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
