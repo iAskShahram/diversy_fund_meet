@@ -8,6 +8,7 @@ import { updateUserSchema } from "@/lib/validators/user.validator";
 import { api } from "@/trpc/react";
 import { Copy, FilePen } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -116,14 +117,15 @@ export const ProfileView = () => {
     <div className="flex w-full flex-col gap-8">
       <div className="flex justify-between">
         <Avatar className="h-24 w-24">
-          <AvatarImage
-            src={
-              session.data?.user.image.length
-                ? session.data?.user.image
-                : "https://github.com/shadcn.png"
-            }
-          />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={session.data?.user.image || ""} />
+          <AvatarFallback className="h-full w-full">
+            <Image
+              src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+              alt="avatar"
+              width={32}
+              height={32}
+            />
+          </AvatarFallback>
         </Avatar>
         <div className="flex items-center justify-center">
           <Input

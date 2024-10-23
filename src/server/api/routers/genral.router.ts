@@ -15,7 +15,7 @@ export const genralRouter = createTRPCRouter({
     // Following are this thing that we neec to return:
     /**
      * - Proposed events this month
-     * - Upcomming events this month
+     * - Upcoming events this month
      * - RSVP Pending of events this month
      * - count of total users
      */

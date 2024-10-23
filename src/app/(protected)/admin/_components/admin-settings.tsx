@@ -12,6 +12,7 @@ import { signOut } from "@/server/auth";
 import { isAdmin } from "@/utils/auth.util";
 import type { Session } from "@auth/core/types";
 import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 type Group = {
@@ -39,16 +40,20 @@ export const AdminSettings = async ({
             <div className="flex items-center space-x-1">
               <Avatar className="flex h-6 w-6 items-center justify-center">
                 <AvatarImage
-                  src={
-                    session.user.image.length
-                      ? session.user.image
-                      : "https://github.com/shadcn.png"
-                  }
-                  className="h-full w-full"
+                  src={session.user.image || ""}
+                  alt={`${session.user.name}'s avatar`}
+                  width={24}
+                  height={24}
+                  className="h-full w-full rounded-full"
                 />
-                <div className="h-4 w-4">
-                  <AvatarFallback className="h-full w-full">CN</AvatarFallback>
-                </div>
+                <AvatarFallback className="flex h-full w-full items-center justify-center">
+                  <Image
+                    src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+                    alt="avatar"
+                    width={32}
+                    height={32}
+                  />
+                </AvatarFallback>
               </Avatar>
               <div>{session?.user.name}</div>
             </div>

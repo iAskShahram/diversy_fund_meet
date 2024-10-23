@@ -13,7 +13,7 @@ export const UpcomingMeetings = ({
   return (
     <Card className={cn("h-fit", className)}>
       <CardHeader>
-        <CardTitle>Upcomming Meetings</CardTitle>
+        <CardTitle>Upcoming Meetings</CardTitle>
         {/* <CardDescription>upcoming meetings this month</CardDescription> */}
       </CardHeader>
       <CardContent className="h-full">

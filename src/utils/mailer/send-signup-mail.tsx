@@ -9,7 +9,7 @@ export const sendSignUpEmail = async ({
 }) => {
   const body = `
   <p>Your password is ${password}</p>
-  <p>Login link: <a href="${process.env.NEXTAUTH_URL}/signin" target="_blank">Sign In</a></p>
+  <p>Login link: <a href="${process.env.NEXTAUTH_URL}/auth/signin" target="_blank">Sign In</a></p>
   `;
   const result = await sendMail({
     to: email,

@@ -43,7 +43,7 @@ const Page = () => {
         <div>
           <h1 className="text-2xl font-bold">Manage Meetings</h1>
           <p className="text-sm text-muted-foreground">
-            Manage your schedual & stay up to date
+            Manage your schedule & stay up to date
           </p>
         </div>
 

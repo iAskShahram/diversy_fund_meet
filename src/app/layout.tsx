@@ -6,9 +6,20 @@ import type { Metadata } from "next";
 import { Providers } from "@/components/ui/providers/providers";
 
 export const metadata: Metadata = {
-  title: "Meet Planner",
-  description: "Meet Planner",
+  title: "Board Portal | Diversyfund",
+  description: "Board Portal | Diversyfund",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  manifest: "/site.webmanifest",
+  openGraph: {
+    title: "Board Portal | Diversyfund",
+    description: "Board Portal | Diversyfund",
+    url: "https://boardportal.diversyfund.com",
+    siteName: "Board Portal | Diversyfund",
+  },
+  twitter: {
+    title: "Board Portal | Diversyfund",
+    description: "Board Portal | Diversyfund",
+  },
 };
 
 export default function RootLayout({

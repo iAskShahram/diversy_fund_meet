@@ -51,7 +51,7 @@ const Page = () => {
             <p className="px-8 text-center text-sm text-muted-foreground">
               Don&apos;t have an account? Contact{" "}
               <Link
-                href="mailto:support@example.com"
+                href="mailto:nico.valdez@diversyfund.com"
                 target="_blank"
                 className="underline underline-offset-4 hover:text-primary"
               >

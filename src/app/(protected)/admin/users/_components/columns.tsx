@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Files, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DataTableColumnHeader } from "../../meetings/_components/dataTable/data-table-column-header";
@@ -32,11 +33,16 @@ export const columns: ColumnDef<Meeting>[] = [
         <div className="flex">
           <div>
             <Avatar>
-              <AvatarImage
-                src={user.image || "https://github.com/shadcn.png"}
-              />
+              <AvatarImage src={user.image || ""} />
               <div className="h-4 w-4">
-                <AvatarFallback className="h-full w-full">CN</AvatarFallback>
+                <AvatarFallback className="flex h-full w-full items-center justify-center">
+                  <Image
+                    src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+                    alt="avatar"
+                    width={32}
+                    height={32}
+                  />
+                </AvatarFallback>
               </div>
             </Avatar>
           </div>
