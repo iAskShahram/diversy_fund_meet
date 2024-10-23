@@ -102,42 +102,5 @@ export const columns: ColumnDef<Meeting>[] = [
         </div>
       );
     },
-  },
-  {
-    id: "actions",
-    header: () => <div>Actions</div>,
-    cell: ({ row }) => {
-      const user = row.original;
-      const utils = api.useUtils();
-      const { mutate: deleteUser } = api.user.delete.useMutation({
-        onSuccess: () => {
-          toast.success("User deleted");
-          void utils.user.getAll.invalidate();
-        },
-        onError: () => {
-          toast.error("Failed to delete user");
-        },
-      });
-
-      return (
-        <div className="flex items-center gap-2">
-          <Button
-            className="border border-destructive p-2"
-            variant={"outline"}
-            type="button"
-            onClick={async () => {
-              const confirmed = confirm(
-                "Are you sure you want to delete this user?",
-              );
-              if (confirmed) {
-                deleteUser({ id: user.id });
-              }
-            }}
-          >
-            <Trash2 className="h-4 w-4 text-destructive" />
-          </Button>
-        </div>
-      );
-    },
-  },
+  }
 ];
