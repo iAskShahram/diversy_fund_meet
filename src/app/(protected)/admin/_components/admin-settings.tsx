@@ -11,17 +11,30 @@ import { cn } from "@/lib/utils";
 import { signOut } from "@/server/auth";
 import { isAdmin } from "@/utils/auth.util";
 import type { Session } from "@auth/core/types";
-import { ChevronsUpDown, LogOut, Settings2 } from "lucide-react";
+import { ChevronsUpDown, LifeBuoy, LogOut, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 type Group = {
-  items: { label: string; icon: React.ElementType; href: string }[];
+  items: Array<{
+    label: string;
+    icon: React.ElementType;
+    href: string;
+    isExternal?: boolean;
+  }>;
 };
 
 const groups: Group[] = [
   {
-    items: [{ label: "Settings", icon: Settings2, href: "/settings/profile" }],
+    items: [
+      { label: "Profile", icon: User, href: "/settings/profile" },
+      {
+        label: "Support",
+        icon: LifeBuoy,
+        href: "mailto:nico.valdez@diversyfund.com",
+        isExternal: true,
+      },
+    ],
   },
 ];
 
@@ -65,11 +78,20 @@ export const AdminSettings = async ({
             <DropdownMenuGroup key={index}>
               {group.items.map((item) => (
                 <Link
-                  href={isAdmin(session) ? "/admin" + item.href : item.href}
+                  href={
+                    item.isExternal
+                      ? item.href
+                      : isAdmin(session)
+                        ? "/admin" + item.href
+                        : item.href
+                  }
+                  target={item.isExternal ? "_blank" : "_self"}
                   key={item.label}
                 >
                   <DropdownMenuItem className="cursor-pointer">
-                    {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                    {item.icon && (
+                      <item.icon className="mr-2 h-4 w-4 text-primary" />
+                    )}
                     {item.label}
                   </DropdownMenuItem>
                 </Link>
