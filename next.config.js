@@ -7,7 +7,20 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ['png.pngtree.com', 'board-portal-2024.s3.us-west-1.amazonaws.com'],
+    remotePatterns: [
+      {
+        hostname: "png.pngtree.com",
+        pathname: "/**",
+        protocol: "https",
+        port: "",
+      },
+      {
+        hostname: "board-portal-2024.s3.us-west-1.amazonaws.com",
+        pathname: "/**",
+        protocol: "https",
+        port: "",
+      },
+    ],
   },
 };
 
