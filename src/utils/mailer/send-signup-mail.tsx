@@ -35,14 +35,14 @@ export const sendSignUpEmail = async ({
 
 
   <hr style="border: 0; border-top: 1px solid #ccc; margin: 20px 0;" />
-  <footer style="font-size: 10px; color: #666;">
+  <footer style="font-size: 10px;">
     <p>Nico Valdez | Future Operations Manager / Special Projects / AI Specialist</p>
     <p>DiversyFund | The Wealth-Tech platform that enables<br />Main Street investors to build wealth like the 1%</p>
     <br />
     <p>DiversyFund</p>
     <p>750 "B" Street Suite 1930</p>
     <p>San Diego, CA 92101</p>
-    <p><a target="_blank" href="http://www.diversyfund.com" style="color: #666; text-decoration: none;">www.diversyfund.com</a></p>
+    <p><a target="_blank" href="http://www.diversyfund.com" style="text-decoration: none;">www.diversyfund.com</a></p>
     <br />
     <p style="font-style: italic;">Important & Confidential:</p>
     <p style="font-size: 10px;">This message and any accompanying documents contain information belonging to the sender which may be confidential and legally privileged. This information is only for the use of the individual or entity to which it was intended. If you are not the intended recipient, any disclosure, copying, distribution, or action taken in reliance on the contents of the information contained in this message and any accompanying documents is strictly prohibited. If you have received this message in error, please contact the sender immediately and delete the message.</p>
