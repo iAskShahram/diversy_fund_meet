@@ -25,6 +25,11 @@ const links = [
     label: "Groups",
     href: "/groups",
   },
+  {
+    label: "Introduction",
+    href: "https://diversyfund.com/",
+    isExternal: true,
+  },
 ];
 
 interface NavProps extends React.HTMLAttributes<HTMLElement> {
@@ -42,7 +47,12 @@ export function Nav({ session, className, ...props }: NavProps) {
       {links.map((link) => (
         <Link
           key={link.label}
-          href={`${_isAdmin ? "/admin" : ""}${link.href}`}
+          href={
+            link.isExternal
+              ? link.href
+              : `${_isAdmin ? "/admin" : ""}${link.href}`
+          }
+          target={link.isExternal ? "_blank" : "_self"}
           className={cn(
             "text-sm font-medium transition-colors hover:text-primary",
             link.isHome
