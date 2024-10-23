@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/server";
 import { isAdmin } from "@/utils/auth.util";
+import { capitalizeFirstLetter } from "@/utils/helpers/capitalize-first-letter";
+import { AnnouncementType } from "@prisma/client";
 import { Megaphone, Newspaper } from "lucide-react";
 import type { Session } from "next-auth";
 import { AnnouncementCard } from "./announcement-card";
@@ -26,17 +28,17 @@ export const Announcements = async ({
       </CardHeader>
       <CardContent className="space-y-1">
         {announcements.length > 0 ? (
-          announcements.map((announcement, index) => (
+          announcements.map((announcement) => (
             <AnnouncementCard
               key={announcement.id}
               Icon={
-                index % 2 === 0 ? (
+                announcement.type === AnnouncementType.NEWS ? (
                   <Newspaper className="h-7 w-7 opacity-60" />
                 ) : (
                   <Megaphone className="h-7 w-7 opacity-60" />
                 )
               }
-              title={index % 2 === 0 ? "News" : "Announcement"}
+              title={capitalizeFirstLetter(announcement.type)}
               announcement={announcement}
               session={session}
             />

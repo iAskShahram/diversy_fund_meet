@@ -12,11 +12,12 @@ export const announcementRouter = createTRPCRouter({
   create: adminProcedure
     .input(createAnnouncementSchema)
     .mutation(async ({ ctx, input }) => {
-      const { title, url } = input;
+      const { title, url, type } = input;
       const announcement = await ctx.db.announcement.create({
         data: {
           title,
           url,
+          type,
           createdById: ctx.session.user.id,
         },
       });

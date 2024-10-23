@@ -20,11 +20,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createAnnouncementSchema } from "@/lib/validators/announcement.validator";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AnnouncementType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -34,10 +43,12 @@ type CreatePostForm = z.infer<typeof createAnnouncementSchema>;
 const defaultValues: CreatePostForm = {
   title: "",
   url: "",
+  type: "ANNOUNCEMENTS",
 };
 
 export const CreatePostButton = () => {
   const router = useRouter();
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const form = useForm<CreatePostForm>({
     resolver: zodResolver(createAnnouncementSchema),
     defaultValues,
@@ -116,10 +127,52 @@ export const CreatePostButton = () => {
                     )}
                   />
                 </div>
+                <div className="grid gap-2">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Type</FormLabel>
+                        <FormControl>
+                          <Select
+                            // {...field}
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={isPending}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem
+                                value={AnnouncementType.ANNOUNCEMENTS}
+                              >
+                                Announcements
+                              </SelectItem>
+                              <SelectItem value={AnnouncementType.NEWS}>
+                                News
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </div>
             </div>
             <AlertDialogFooter className="mt-6 flex !justify-between">
-              <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+              <AlertDialogCancel
+                ref={cancelRef}
+                disabled={isPending}
+                onClick={() => {
+                  form.reset(defaultValues);
+                  cancelRef.current?.click();
+                }}
+              >
+                Cancel
+              </AlertDialogCancel>
               <Button type="submit" disabled={isPending}>
                 {isPending ? "Publishing..." : "Publish"}
               </Button>
