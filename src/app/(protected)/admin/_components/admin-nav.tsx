@@ -18,8 +18,8 @@ const links = [
     href: "/meetings",
   },
   {
-    label: "Users",
-    href: "/users",
+    label: "Members",
+    href: "/members",
   },
   {
     label: "Groups",

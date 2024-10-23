@@ -3,10 +3,10 @@
 import { api } from "@/trpc/react";
 import { usePaginationParam } from "@/utils/hooks/usePaginationParam.hook";
 import { Suspense } from "react";
-import { AddUser } from "@/app/(protected)/admin/users/_components/add-user";
+import { AddUser } from "@/app/(protected)/admin/members/_components/add-user";
 import { DataTable } from "@/app/(protected)/admin/meetings/_components/data-table";
 import { useIsAdmin } from "@/utils/hooks/useIsAdmin.hook";
-import { columns } from "@/app/(protected)/admin/users/_components/columns";
+import { columns } from "@/app/(protected)/admin/members/_components/columns";
 
 const Page = () => {
   const isAdmin = useIsAdmin();
