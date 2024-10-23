@@ -175,6 +175,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   getLastFour: protectedProcedure.query(async ({ ctx }) => {
+    const _isAdmin = isAdmin(ctx.session);
     const events = await ctx.db.event.findMany({
       orderBy: {
         dateTime: "desc",
@@ -184,6 +185,19 @@ export const eventRouter = createTRPCRouter({
         id: true,
         title: true,
         dateTime: true,
+        ...(!_isAdmin && {
+          googleMeetLink: true,
+          rsvps: {
+            select: {
+              id: true,
+              rsvp: true,
+              userId: true,
+            },
+            where: {
+              userId: ctx.session.user.id,
+            },
+          },
+        }),
         groups: {
           select: {
             name: true,
@@ -194,7 +208,7 @@ export const eventRouter = createTRPCRouter({
         dateTime: {
           gte: new Date(),
         },
-        ...(!isAdmin(ctx.session) && {
+        ...(!_isAdmin && {
           groups: {
             some: {
               users: {

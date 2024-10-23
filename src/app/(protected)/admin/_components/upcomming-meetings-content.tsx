@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { GoogleMeet } from "@/components/ui/icons/google-meet.icon";
 import { api } from "@/trpc/server";
 import { isAdmin } from "@/utils/auth.util";
 import { format } from "date-fns";
@@ -23,6 +24,7 @@ export const UpcommingMeetingsContent = async ({
               title={event.title}
               date={event.dateTime}
               description={event.groups.map((group) => group.name).join(", ")}
+              googleMeetLink={event.googleMeetLink}
             />
           ))
         ) : (
@@ -66,22 +68,35 @@ const MeetingCard = ({
   title,
   date,
   description,
+  googleMeetLink,
 }: {
   title: string;
   date: Date;
   description: string;
+  googleMeetLink: string;
 }) => {
   return (
     <div className="flex flex-col gap-2 rounded-md bg-gray-50 p-4 hover:bg-gray-100">
-      <div className="flex justify-between">
-        <h4 className="font-medium leading-none tracking-tight">{title}</h4>
-        <p className="text-xs text-muted-foreground">
-          {format(date, "MMM d, yyyy h:mm a")}
+      <div className="flex flex-col gap-1">
+        <div className="flex justify-between">
+          <h4 className="font-medium leading-none tracking-tight">{title}</h4>
+          <p className="text-sm">{format(date, "MMM d, yyyy h:mm a")}</p>
+        </div>
+        <p className="w-2/3 truncate text-xs text-muted-foreground">
+          {description}
         </p>
       </div>
-      <p className="w-2/3 truncate text-xs text-muted-foreground">
-        {description}
-      </p>
+      {googleMeetLink && (
+        <div className="flex justify-between">
+          <div></div>
+          <Link href={googleMeetLink} target="_blank">
+            <Button variant={"outline"} className="gap-2">
+              <GoogleMeet className="h-6 w-6" />
+              Join With Google Meet
+            </Button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
