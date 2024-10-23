@@ -122,8 +122,8 @@ export const ProfileView = () => {
             <Image
               src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
               alt="avatar"
-              width={32}
-              height={32}
+              width={100}
+              height={100}
             />
           </AvatarFallback>
         </Avatar>

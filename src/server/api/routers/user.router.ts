@@ -92,6 +92,7 @@ export const userRouter = createTRPCRouter({
         const result = await sendSignUpEmail({
           email,
           password: randomString,
+          name,
         });
         if (!result.success) {
           throw createHttpError.InternalServerError(

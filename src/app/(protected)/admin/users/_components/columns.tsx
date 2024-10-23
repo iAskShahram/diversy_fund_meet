@@ -34,16 +34,14 @@ export const columns: ColumnDef<Meeting>[] = [
           <div>
             <Avatar>
               <AvatarImage src={user.image || ""} />
-              <div className="h-4 w-4">
-                <AvatarFallback className="flex h-full w-full items-center justify-center">
-                  <Image
-                    src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
-                    alt="avatar"
-                    width={32}
-                    height={32}
-                  />
-                </AvatarFallback>
-              </div>
+              <AvatarFallback className="h-full w-full">
+                <Image
+                  src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+                  alt="avatar"
+                  width={100}
+                  height={100}
+                />
+              </AvatarFallback>
             </Avatar>
           </div>
           <div className="flex flex-row items-center gap-2 px-4">
