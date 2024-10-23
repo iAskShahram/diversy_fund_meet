@@ -72,6 +72,8 @@ model Announcement {
     title String
     url   String
 
+    type AnnouncementType @default(ANNOUNCEMENTS)
+
     createdBy   User   @relation(fields: [createdById], references: [id])
     createdById String
 
@@ -88,4 +90,9 @@ enum Role {
 enum RsvpStatus {
     YES
     NO
+}
+
+enum AnnouncementType {
+    ANNOUNCEMENTS
+    NEWS
 }
