@@ -1,25 +1,17 @@
 import { AppLogo } from "@/app/(protected)/_components/app-logo";
 import Link from "next/link";
 import { LoginForm } from "./_components/login-form";
+import { env } from "@/env";
 
 const Page = () => {
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="container relative grid h-full flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
-        {/* <Link
-        href="/examples/authentication"
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "absolute right-4 top-4 md:right-8 md:top-8",
-        )}
-      >
-        Login
-      </Link> */}
         <div className="relative hidden h-full flex-col bg-muted p-20 text-white dark:border-r lg:flex">
           <div
-            className="absolute inset-0 bg-[url('/signin.png')]"
+            className="absolute inset-0"
             style={{
-              backgroundImage: "url('/static/signin.png')",
+              backgroundImage: `url('${env.NEXTAUTH_URL}/static/signin.png')`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
