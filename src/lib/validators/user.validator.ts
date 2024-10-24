@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const updateUserSchema = z
   .object({
-    name: z.string().nullish(),
-    avatar: z.string().nullish(),
+    name: z.string().min(1).nullish(),
+    avatar: z.string().min(1).nullish(),
   })
   .refine((data) => data.name !== null || data.avatar !== null, {
     message: "At least one of 'name' or 'avatar' must be provided",
