@@ -1,9 +1,9 @@
 "use client";
 
+import { DataTableColumnHeader } from "@/app/(protected)/admin/meetings/_components/dataTable/data-table-column-header";
 import type { ColumnDef, Row } from "@tanstack/react-table";
 import { UserRound, Users } from "lucide-react";
 import { z } from "zod";
-import { DataTableColumnHeader } from "../../meetings/_components/dataTable/data-table-column-header";
 import { EditGroup } from "./edit-group";
 
 export const groupSchema = z.object({
@@ -12,20 +12,20 @@ export const groupSchema = z.object({
   usersCount: z.number(),
 });
 
-export type Meeting = z.infer<typeof groupSchema>;
+export type Group = z.infer<typeof groupSchema>;
 
-const actionColumn: ColumnDef<Meeting>[] = [
+const actionColumn: ColumnDef<Group>[] = [
   {
     id: "actions",
     header: () => <div>Action</div>,
-    cell: ({ row }: { row: Row<Meeting> }) => {
+    cell: ({ row }: { row: Row<Group> }) => {
       const group = row.original;
 
       return <EditGroup groupId={group.id} />;
     },
   },
 ];
-export const columns: ColumnDef<Meeting>[] = [
+export const columns: ColumnDef<Group>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -59,7 +59,7 @@ export const columns: ColumnDef<Meeting>[] = [
   {
     id: "actions",
     header: () => <div>Action</div>,
-    cell: ({ row }: { row: Row<Meeting> }) => {
+    cell: ({ row }: { row: Row<Group> }) => {
       const group = row.original;
 
       return (
@@ -71,7 +71,7 @@ export const columns: ColumnDef<Meeting>[] = [
   },
 ];
 
-export const userColumns: ColumnDef<Meeting>[] = [
+export const userColumns: ColumnDef<Group>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -104,7 +104,7 @@ export const userColumns: ColumnDef<Meeting>[] = [
   },
 ];
 
-export const adminColumns: ColumnDef<Meeting>[] = [
+export const adminColumns: ColumnDef<Group>[] = [
   ...userColumns,
   ...actionColumn,
 ];
