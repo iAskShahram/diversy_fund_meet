@@ -50,6 +50,13 @@ export const groupRouter = createTRPCRouter({
           _count: {
             select: { users: true },
           },
+          users: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
         },
         where,
       });
