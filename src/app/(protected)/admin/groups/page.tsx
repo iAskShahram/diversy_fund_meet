@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { DataTable } from "../meetings/_components/data-table";
-import { columns } from "./_components/columns";
+import { adminColumns } from "./_components/columns";
 import { CreateGroup } from "./_components/create-group";
 import { usePaginationParam } from "@/utils/hooks/usePaginationParam.hook";
 import { Suspense } from "react";
@@ -34,7 +34,7 @@ const Page = () => {
         </div>
 
         <DataTable
-          columns={columns}
+          columns={adminColumns}
           data={groups?.groups ?? []}
           totalCount={groups?.totalCount ?? 0}
           perPage={perPage}

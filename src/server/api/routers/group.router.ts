@@ -1,6 +1,7 @@
 import { paginationQuerySchema } from "@/lib/validators/common.validator";
 import {
   createGroupSchema,
+  deleteGroupSchema,
   getGroupUsersSchema,
   updateGroupSchema,
 } from "@/lib/validators/group.validator";
@@ -127,5 +128,27 @@ export const groupRouter = createTRPCRouter({
         },
       });
       return group;
+    }),
+
+  delete: adminProcedure
+    .input(deleteGroupSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input;
+      await ctx.db.$transaction(async (tx) => {
+        await tx.event.deleteMany({
+          where: {
+            groups: {
+              some: {
+                id,
+              },
+            },
+          },
+        });
+        await tx.group.delete({
+          where: { id },
+        });
+      });
+
+      return true;
     }),
 });

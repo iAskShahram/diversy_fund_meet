@@ -2,9 +2,12 @@
 
 import { DataTableColumnHeader } from "@/app/(protected)/admin/meetings/_components/dataTable/data-table-column-header";
 import type { ColumnDef, Row } from "@tanstack/react-table";
-import { UserRound, Users } from "lucide-react";
+import { Trash2, UserRound, Users } from "lucide-react";
 import { z } from "zod";
 import { EditGroup } from "./edit-group";
+import { api } from "@/trpc/react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export const groupSchema = z.object({
   id: z.string(),
@@ -16,12 +19,52 @@ export type Group = z.infer<typeof groupSchema>;
 
 const actionColumn: ColumnDef<Group>[] = [
   {
-    id: "actions",
-    header: () => <div>Action</div>,
+    id: "edit_group",
+    header: () => <div>Edit Group</div>,
     cell: ({ row }: { row: Row<Group> }) => {
       const group = row.original;
 
       return <EditGroup groupId={group.id} />;
+    },
+  },
+  {
+    id: "actions",
+    header: () => <div>Actions</div>,
+    cell: ({ row }) => {
+      const group = row.original;
+
+      const utils = api.useUtils();
+      const { mutate: deletegroup, isPending } = api.group.delete.useMutation({
+        onSuccess: async () => {
+          await utils.group.getAll.invalidate();
+        },
+        onError: (error) => {
+          toast.error(`Error deleting group: ${error.message}`);
+        },
+      });
+
+      const handleDelete = () => {
+        if (
+          window.confirm(
+            "This will also delete any events associated with the group.\nNOTE: This action cannot be undone.\n\nAre you sure?",
+          )
+        ) {
+          deletegroup({ id: group.id });
+        }
+      };
+
+      return (
+        <div className="flex items-center">
+          <Button
+            variant={"outline"}
+            className="border border-destructive"
+            disabled={isPending}
+            onClick={handleDelete}
+          >
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      );
     },
   },
 ];
@@ -56,19 +99,19 @@ export const columns: ColumnDef<Group>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    header: () => <div>Action</div>,
-    cell: ({ row }: { row: Row<Group> }) => {
-      const group = row.original;
+  // {
+  //   id: "actions",
+  //   header: () => <div>Action</div>,
+  //   cell: ({ row }: { row: Row<Group> }) => {
+  //     const group = row.original;
 
-      return (
-        <div className="flex items-center gap-2">
-          <EditGroup groupId={group.id} />
-        </div>
-      );
-    },
-  },
+  //     return (
+  //       <div className="flex items-center gap-2">
+  //         <EditGroup groupId={group.id} />
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
 
 export const userColumns: ColumnDef<Group>[] = [

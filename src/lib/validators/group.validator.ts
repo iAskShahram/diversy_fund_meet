@@ -16,3 +16,7 @@ export const updateGroupSchema = z.object({
   name: groupNameSchema,
   userIDs: z.array(z.string()).optional(),
 });
+
+export const deleteGroupSchema = z.object({
+  id: z.string().cuid({ message: "Invalid group" }),
+});
