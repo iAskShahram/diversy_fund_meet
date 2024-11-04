@@ -1,19 +1,17 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { GoogleMeet } from "@/components/ui/icons/google-meet.icon";
-import { api } from "@/trpc/server";
 import { isAdmin } from "@/utils/auth.util";
 import { format } from "date-fns";
 import { CalendarDays } from "lucide-react";
 import type { Session } from "next-auth";
 import Link from "next/link";
 import { NoContentCard } from "./no-content-card";
+import { api } from "@/trpc/react";
 
-export const UpcommingMeetingsContent = async ({
-  session,
-}: {
-  session: Session;
-}) => {
-  const events = await api.event.getLastFour();
+export const UpcommingMeetingsContent = ({ session }: { session: Session }) => {
+  const { data: events = [] } = api.event.getLastFour.useQuery();
   return (
     <div className="flex flex-col justify-between gap-12">
       <div className="flex h-max flex-col gap-3">
