@@ -24,12 +24,7 @@ const links = [
   {
     label: "Groups",
     href: "/groups",
-  },
-  {
-    label: "Introduction",
-    href: "https://diversyfund.com/",
-    isExternal: true,
-  },
+  }
 ];
 
 interface NavProps extends React.HTMLAttributes<HTMLElement> {
