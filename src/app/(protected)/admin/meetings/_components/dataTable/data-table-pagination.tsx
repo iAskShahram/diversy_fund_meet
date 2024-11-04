@@ -27,11 +27,11 @@ export function DataTablePagination<TData>({
 }: DataTablePaginationProps<TData>) {
   const router = useRouter();
   const pathname = usePathname();
-  const pageSizes = useMemo(() => [10, 15, 20], []);
+  const pageSizes = useMemo(() => [10, 15, 20, 200], []);
 
   const getPaginationParam = usePaginationParam();
 
-  const perPage = getPaginationParam("perPage", 10, 100);
+  const perPage = getPaginationParam("perPage", 10, 200);
   const page = getPaginationParam("page", 1);
   const nextPage = Math.min(page + 1, table.getPageCount());
   const canNextPage = table.getPageCount() > page;

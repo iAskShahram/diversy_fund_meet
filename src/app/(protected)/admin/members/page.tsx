@@ -9,7 +9,7 @@ import { columns } from "./_components/columns";
 
 const Page = () => {
   const getPaginationParam = usePaginationParam();
-  const perPage = getPaginationParam("perPage", 10, 100);
+  const perPage = getPaginationParam("perPage", 10, 200);
   const page = getPaginationParam("page", 1);
   const { data: users } = api.user.getAll.useQuery({
     perPage,
