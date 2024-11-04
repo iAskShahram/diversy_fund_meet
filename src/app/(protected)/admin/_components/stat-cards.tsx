@@ -12,10 +12,6 @@ export const StatCards = async () => {
   const { upcomingEvents, rsvpPending } = await api.genral.indexMeta();
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-      <InfoCard
-        title="Fund 4 Introduction"
-        link="https://share.hsforms.com/18Om4MhvUQMWSr9CdEiSXIQejxgs"
-      />
       <StatCard
         title="Upcoming Meetings"
         value={upcomingEvents}
@@ -27,6 +23,10 @@ export const StatCards = async () => {
         value={rsvpPending}
         description="pending responses"
         RIcon={TriangleAlert}
+      />
+      <InfoCard
+        title="Fund 4 Introduction"
+        link="https://share.hsforms.com/18Om4MhvUQMWSr9CdEiSXIQejxgs"
       />
       <InfoCard
         title="Parent company introduction"
