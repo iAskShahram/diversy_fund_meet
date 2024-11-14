@@ -49,6 +49,7 @@ export const eventRouter = createTRPCRouter({
         },
         select: {
           email: true,
+          id: true,
         },
       });
       if (!attendeeEmails.length) {
@@ -75,6 +76,15 @@ export const eventRouter = createTRPCRouter({
           googleMeetLink: meetLink,
           groups: {
             connect: groups.map((id) => ({ id })),
+          },
+          rsvps: {
+            createMany: {
+              skipDuplicates: true,
+              data: attendeeEmails.map((user) => ({
+                userId: user.id,
+                rsvp: RsvpStatus.NO,
+              })),
+            },
           },
         },
       });
@@ -155,6 +165,23 @@ export const eventRouter = createTRPCRouter({
         };
       }
 
+      if (isAdmin(ctx.session)) {
+        selectObj.rsvps = {
+          ...(selectObj.rsvps as object),
+          select: {
+            ...(typeof selectObj.rsvps === "object" && selectObj.rsvps.select
+              ? selectObj.rsvps.select
+              : {}),
+            user: {
+              select: {
+                image: true,
+                name: true,
+              },
+            },
+          },
+        };
+      }
+
       const events = await ctx.db.event.findMany({
         where: queryObj,
         select: selectObj,
@@ -162,7 +189,32 @@ export const eventRouter = createTRPCRouter({
         take: perPage,
       });
 
-      const _events = events.map((event) => ({
+      const _events: {
+        groups: string;
+        rsvp: RsvpStatus;
+        id: string;
+        title: string;
+        googleMeetLink: string;
+        dateTime: Date;
+        rsvps: {
+          id: string;
+          rsvp: RsvpStatus;
+          eventId: string;
+          createdAt: Date;
+          updatedAt: Date;
+          userId: string;
+          user?: {
+            image: string;
+            name: string;
+          };
+        }[];
+        description: string;
+        createdAt: Date;
+        updatedAt: Date;
+        _count: {
+          rsvps: number;
+        };
+      }[] = events.map((event) => ({
         ...event,
         groups: event.groups.map((group) => group.name).join(", "),
         rsvp: event.rsvps[0]?.rsvp ?? RsvpStatus.NO,

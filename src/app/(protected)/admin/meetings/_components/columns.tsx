@@ -13,10 +13,25 @@ import { api } from "@/trpc/react";
 import { RsvpStatus } from "@prisma/client";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { CircleCheck, CircleX, Trash2 } from "lucide-react";
+import {
+  ArrowDownNarrowWide,
+  CircleCheck,
+  CircleX,
+  Trash2,
+} from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { DataTableColumnHeader } from "./dataTable/data-table-column-header";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 export const MeetingSchema = z.object({
   id: z.string(),
@@ -30,6 +45,12 @@ export const MeetingSchema = z.object({
       id: z.string(),
       rsvp: z.nativeEnum(RsvpStatus),
       eventId: z.string(),
+      user: z
+        .object({
+          name: z.string(),
+          image: z.string(),
+        })
+        .optional(),
     }),
   ),
 });
@@ -190,6 +211,66 @@ const baseColumns: ColumnDef<Meeting>[] = [
   },
 ];
 
+const listRsvpColumn: ColumnDef<Meeting> = {
+  accessorKey: "rsvps",
+  header: ({ column }) => (
+    <DataTableColumnHeader column={column} title="RSVP Status" />
+  ),
+  cell: ({ row }) => {
+    const { rsvps } = row.original;
+
+    return (
+      <div className="flex flex-row items-center gap-2 px-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant={"default"}
+              className="cursor-pointer rounded-full bg-primary/90 hover:shadow-2xl"
+            >
+              <ArrowDownNarrowWide className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuGroup>
+              {rsvps.map((rsvp) => (
+                <DropdownMenuItem key={rsvp.id} className="cursor-pointer">
+                  <div className="flex w-full items-center gap-1">
+                    <Avatar className="!h-5 !w-5">
+                      <AvatarImage
+                        src={rsvp.user?.image}
+                        alt="avatar"
+                        width={100}
+                        height={100}
+                      />
+                      <AvatarFallback className="flex h-full w-full items-center justify-center">
+                        <Image
+                          src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+                          alt="avatar"
+                          width={100}
+                          height={100}
+                        />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex w-full justify-between gap-1">
+                      {rsvp.user?.name}
+                      <Badge
+                        className={`rounded-full ${rsvp.rsvp === RsvpStatus.YES ? "border border-green-700 bg-green-100 text-green-700" : "border border-destructive bg-red-100 text-destructive"}`}
+                        variant={"outline"}
+                      >
+                        {rsvp.rsvp}
+                      </Badge>
+                    </div>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    );
+  },
+};
+
 export const userColumns: ColumnDef<Meeting>[] = [
   ...baseColumns,
   rsvpColumn,
@@ -199,5 +280,6 @@ export const userColumns: ColumnDef<Meeting>[] = [
 export const adminColumns: ColumnDef<Meeting>[] = [
   ...baseColumns,
   meetColumn,
+  listRsvpColumn,
   actionColumn,
 ];

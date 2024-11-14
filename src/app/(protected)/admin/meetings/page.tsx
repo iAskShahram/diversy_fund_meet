@@ -68,10 +68,7 @@ const Page = () => {
             </TabsList>
             <CreateMeeting />
           </div>
-          <TabsContent
-            value={status}
-            className="border-none p-0 outline-none"
-          >
+          <TabsContent value={status} className="border-none p-0 outline-none">
             <DataTable
               columns={adminColumns}
               data={events?.events ?? []}
