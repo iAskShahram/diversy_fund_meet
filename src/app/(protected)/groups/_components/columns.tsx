@@ -77,7 +77,9 @@ export const columns: ColumnDef<Group>[] = [
                 View Members
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className={`w-56`}>
+            <DropdownMenuContent
+              className={`max-h-96 overflow-x-hidden overflow-y-scroll`}
+            >
               <DropdownMenuGroup>
                 {users.map((user) => (
                   <DropdownMenuItem key={user.id} className="cursor-pointer">

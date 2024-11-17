@@ -230,7 +230,9 @@ const listRsvpColumn: ColumnDef<Meeting> = {
               <ArrowDownNarrowWide className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent
+            className={`max-h-96 overflow-x-hidden overflow-y-scroll`}
+          >
             <DropdownMenuGroup>
               {rsvps.map((rsvp) => (
                 <DropdownMenuItem key={rsvp.id} className="cursor-pointer">
