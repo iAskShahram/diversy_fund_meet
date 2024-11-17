@@ -1,14 +1,13 @@
 "use client";
 
+import { DataTableColumnHeader } from "@/app/(protected)/admin/meetings/_components/dataTable/data-table-column-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { api } from "@/trpc/react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Files, Trash2 } from "lucide-react";
+import { Files } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 import { z } from "zod";
-import { DataTableColumnHeader } from "@/app/(protected)/admin/meetings/_components/dataTable/data-table-column-header";
 
 export const usersSchema = z.object({
   id: z.string(),
@@ -102,5 +101,5 @@ export const columns: ColumnDef<Meeting>[] = [
         </div>
       );
     },
-  }
+  },
 ];
