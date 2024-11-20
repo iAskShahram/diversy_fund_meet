@@ -32,6 +32,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const MeetingSchema = z.object({
   id: z.string(),
@@ -233,39 +234,41 @@ const listRsvpColumn: ColumnDef<Meeting> = {
           <DropdownMenuContent
             className={`max-h-96 overflow-x-hidden overflow-y-scroll`}
           >
-            <DropdownMenuGroup>
-              {rsvps.map((rsvp) => (
-                <DropdownMenuItem key={rsvp.id} className="cursor-pointer">
-                  <div className="flex w-full items-center gap-1">
-                    <Avatar className="!h-5 !w-5">
-                      <AvatarImage
-                        src={rsvp.user?.image}
-                        alt="avatar"
-                        width={100}
-                        height={100}
-                      />
-                      <AvatarFallback className="flex h-full w-full items-center justify-center">
-                        <Image
-                          src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+            <ScrollArea>
+              <DropdownMenuGroup>
+                {rsvps.map((rsvp) => (
+                  <DropdownMenuItem key={rsvp.id} className="cursor-pointer">
+                    <div className="flex w-full items-center gap-1">
+                      <Avatar className="!h-5 !w-5">
+                        <AvatarImage
+                          src={rsvp.user?.image}
                           alt="avatar"
                           width={100}
                           height={100}
                         />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex w-full justify-between gap-1">
-                      {rsvp.user?.name}
-                      <Badge
-                        className={`rounded-full ${rsvp.rsvp === RsvpStatus.YES ? "border border-green-700 bg-green-100 text-green-700" : "border border-destructive bg-red-100 text-destructive"}`}
-                        variant={"outline"}
-                      >
-                        {rsvp.rsvp}
-                      </Badge>
+                        <AvatarFallback className="flex h-full w-full items-center justify-center">
+                          <Image
+                            src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+                            alt="avatar"
+                            width={100}
+                            height={100}
+                          />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex w-full justify-between gap-1">
+                        {rsvp.user?.name}
+                        <Badge
+                          className={`rounded-full ${rsvp.rsvp === RsvpStatus.YES ? "border border-green-700 bg-green-100 text-green-700" : "border border-destructive bg-red-100 text-destructive"}`}
+                          variant={"outline"}
+                        >
+                          {rsvp.rsvp}
+                        </Badge>
+                      </div>
                     </div>
-                  </div>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </ScrollArea>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

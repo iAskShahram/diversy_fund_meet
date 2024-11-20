@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ColumnDef } from "@tanstack/react-table";
 import { UserRound, Users } from "lucide-react";
 import Image from "next/image";
@@ -80,31 +81,33 @@ export const columns: ColumnDef<Group>[] = [
             <DropdownMenuContent
               className={`max-h-96 overflow-x-hidden overflow-y-scroll`}
             >
-              <DropdownMenuGroup>
-                {users.map((user) => (
-                  <DropdownMenuItem key={user.id} className="cursor-pointer">
-                    <div className="flex items-center gap-1">
-                      <Avatar className="!h-5 !w-5">
-                        <AvatarImage
-                          src={user.image}
-                          alt="avatar"
-                          width={100}
-                          height={100}
-                        />
-                        <AvatarFallback className="flex h-full w-full items-center justify-center">
-                          <Image
-                            src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+              <ScrollArea>
+                <DropdownMenuGroup>
+                  {users.map((user) => (
+                    <DropdownMenuItem key={user.id} className="cursor-pointer">
+                      <div className="flex items-center gap-1">
+                        <Avatar className="!h-5 !w-5">
+                          <AvatarImage
+                            src={user.image}
                             alt="avatar"
                             width={100}
                             height={100}
                           />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>{user.name}</div>
-                    </div>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuGroup>
+                          <AvatarFallback className="flex h-full w-full items-center justify-center">
+                            <Image
+                              src="https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg"
+                              alt="avatar"
+                              width={100}
+                              height={100}
+                            />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>{user.name}</div>
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </ScrollArea>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
