@@ -131,6 +131,7 @@ export const EditGroup = ({ groupId }: { groupId: string }) => {
                     variant="inverted"
                     modalPopover={true}
                     disabled={isPending || isUpdating}
+                    isInDialog={true}
                   />
                 )}
               </div>

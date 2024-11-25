@@ -109,6 +109,7 @@ export const CreateGroup = () => {
                   variant="inverted"
                   modalPopover={true}
                   disabled={isPending}
+                  isInDialog={true}
                 />
               </div>
             </div>

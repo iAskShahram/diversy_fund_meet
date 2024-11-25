@@ -122,6 +122,7 @@ export const CreateMeeting = () => {
                   variant="inverted"
                   disabled={isPending || isCreating}
                   modalPopover={true}
+                  isInDialog={true}
                 />
               </div>
               <div className="grid gap-2">

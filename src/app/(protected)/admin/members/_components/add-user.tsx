@@ -149,6 +149,7 @@ export const AddUser = () => {
                     variant="inverted"
                     modalPopover={true}
                     disabled={isPending || isCreating}
+                    isInDialog={true}
                   />
                 )}
               </div>
